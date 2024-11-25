@@ -3,7 +3,9 @@
 	"package": "net.aluminiumtn.dsqextension.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"DsqMixin"
+		"DsqMixin",
+		"TradeScreenHandlerMixin",
+		"MerchantScreenHandlerAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1
