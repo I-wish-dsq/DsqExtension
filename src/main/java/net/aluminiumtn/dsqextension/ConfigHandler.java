@@ -10,7 +10,8 @@ public class ConfigHandler {
     private static final String CONFIG_FILE = "config/dsqextension.conf";
     private static boolean sneakingItemsEnabled = false;
     private static boolean reIntroduceOldRaidsEnabled = false;
-    private static boolean returnVoidTradeEnabled = false;  // Новая переменная
+    private static boolean returnVoidTradeEnabled = false;
+    private static boolean returnExpFromPigmansEnabled = false;
 
     static {
         try (FileReader reader = new FileReader(CONFIG_FILE)) {
@@ -18,7 +19,8 @@ public class ConfigHandler {
             properties.load(reader);
             sneakingItemsEnabled = Boolean.parseBoolean(properties.getProperty("sneakingItems", "false"));
             reIntroduceOldRaidsEnabled = Boolean.parseBoolean(properties.getProperty("reIntroduceOldRaids", "false"));
-            returnVoidTradeEnabled = Boolean.parseBoolean(properties.getProperty("returnVoidTradeEnabled", "false"));  // Инициализация новой переменной
+            returnVoidTradeEnabled = Boolean.parseBoolean(properties.getProperty("returnVoidTradeEnabled", "false"));
+            returnExpFromPigmansEnabled = Boolean.parseBoolean(properties.getProperty("returnExpFromPigmansEnabled", "false"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,13 +44,21 @@ public class ConfigHandler {
         saveConfig();
     }
 
-    public static boolean isReturnVoidTradeEnabled() {  // Геттер для новой переменной
+    public static boolean isReturnVoidTradeEnabled() {
         return returnVoidTradeEnabled;
     }
 
-    public static void setReturnVoidTradeEnabled(boolean enabled) {  // Сеттер для новой переменной
+    public static void setReturnVoidTradeEnabled(boolean enabled) {
         returnVoidTradeEnabled = enabled;
         saveConfig();
+    }
+
+    public static boolean isReturnExpFromPigmansEnabled() {
+        return returnExpFromPigmansEnabled;
+    }
+
+    public static void setReturnExpFromPigmansEnabled(boolean enabled) {
+        returnExpFromPigmansEnabled = enabled;
     }
 
     private static void saveConfig() {
@@ -56,7 +66,8 @@ public class ConfigHandler {
             Properties properties = new Properties();
             properties.setProperty("sneakingItems", Boolean.toString(sneakingItemsEnabled));
             properties.setProperty("reIntroduceOldRaids", Boolean.toString(reIntroduceOldRaidsEnabled));
-            properties.setProperty("returnVoidTradeEnabled", Boolean.toString(returnVoidTradeEnabled));  // Сохранение новой переменной
+            properties.setProperty("returnVoidTradeEnabled", Boolean.toString(returnVoidTradeEnabled));
+            properties.setProperty("returnExpFromPigmansEnabled", Boolean.toString(returnExpFromPigmansEnabled));
             properties.store(writer, "DSQ Extension Config");
         } catch (IOException e) {
             e.printStackTrace();

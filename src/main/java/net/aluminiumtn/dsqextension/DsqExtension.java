@@ -23,6 +23,7 @@ public class DsqExtension implements ModInitializer {
             oldRaidsHandlerRegistered = true;
         }
         registerCommands();
+        ZombiePigmanAggro.register();
     }
 
     private void registerCommands() {
@@ -64,16 +65,31 @@ public class DsqExtension implements ModInitializer {
                 })
             )
         )
-        .then(CommandManager.literal("returnVoidTrade")  // Новая подкоманда
+        .then(CommandManager.literal("returnVoidTrade")
             .then(CommandManager.argument("enabled", BoolArgumentType.bool())
                 .executes(context -> {
                     boolean enabled = BoolArgumentType.getBool(context, "enabled");
                     ConfigHandler.setReturnVoidTradeEnabled(enabled);
                     context.getSource().sendFeedback(() -> Text.literal("Return void trade set to " + enabled), true);
                     return 1;
-                 })
-                )
+                })
             )
-        );
-    }
+        )
+        .then(CommandManager.literal("returnExpFromPigmans")
+            .then(CommandManager.argument("enabled", BoolArgumentType.bool())
+                .executes(context -> {
+                    boolean enabled = BoolArgumentType.getBool(context, "enabled");
+                    ConfigHandler.setReturnExpFromPigmansEnabled(enabled);
+                    context.getSource().sendFeedback(() -> Text.literal("Return exp from pigmans set to " + enabled), true);
+                    if (enabled) {
+                        ZombiePigmanAggro.register();
+                    } else {
+                        ZombiePigmanAggro.unregister();
+                    }
+                    return 1;
+                })
+            )
+        )
+    );
+}
 }
