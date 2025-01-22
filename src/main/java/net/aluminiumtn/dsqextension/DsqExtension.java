@@ -90,6 +90,22 @@ public class DsqExtension implements ModInitializer {
                 })
             )
         )
+            .then(CommandManager.literal("AIDisableShovel")
+                    .then(CommandManager.argument("enabled", BoolArgumentType.bool())
+                            .executes(context -> {
+                                boolean enabled = BoolArgumentType.getBool(context, "enabled");
+                                ConfigHandler.setAIDisableShovel(enabled);
+                                context.getSource().sendFeedback(() -> Text.literal("Disabled AI for slapped mobs set to " + enabled), true);
+                                if (enabled) {
+                                    AIDisableShovel.register();
+                                } else {
+                                    AIDisableShovel.unregister();
+                                }
+                                return 1;
+                            })
+                    )
+            )
+
     );
 }
 }

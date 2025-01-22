@@ -12,6 +12,7 @@ public class ConfigHandler {
     private static boolean reIntroduceOldRaidsEnabled = false;
     private static boolean returnVoidTradeEnabled = false;
     private static boolean returnExpFromPigmansEnabled = false;
+    private static boolean AIDisableShovelEnabled = false;
 
     static {
         try (FileReader reader = new FileReader(CONFIG_FILE)) {
@@ -21,6 +22,7 @@ public class ConfigHandler {
             reIntroduceOldRaidsEnabled = Boolean.parseBoolean(properties.getProperty("reIntroduceOldRaids", "false"));
             returnVoidTradeEnabled = Boolean.parseBoolean(properties.getProperty("returnVoidTradeEnabled", "false"));
             returnExpFromPigmansEnabled = Boolean.parseBoolean(properties.getProperty("returnExpFromPigmansEnabled", "false"));
+            AIDisableShovelEnabled = Boolean.parseBoolean(properties.getProperty("AIDisableShovelEnabled", "false"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -59,6 +61,16 @@ public class ConfigHandler {
 
     public static void setReturnExpFromPigmansEnabled(boolean enabled) {
         returnExpFromPigmansEnabled = enabled;
+        saveConfig();
+    }
+
+    public static boolean isAIDisableShovel() {
+        return AIDisableShovelEnabled;
+    }
+
+    public static void setAIDisableShovel(boolean enabled) {
+        AIDisableShovelEnabled = enabled;
+        saveConfig();
     }
 
     private static void saveConfig() {
@@ -68,6 +80,7 @@ public class ConfigHandler {
             properties.setProperty("reIntroduceOldRaids", Boolean.toString(reIntroduceOldRaidsEnabled));
             properties.setProperty("returnVoidTradeEnabled", Boolean.toString(returnVoidTradeEnabled));
             properties.setProperty("returnExpFromPigmansEnabled", Boolean.toString(returnExpFromPigmansEnabled));
+            properties.setProperty("AIDisableShovel", Boolean.toString(AIDisableShovelEnabled));
             properties.store(writer, "DSQ Extension Config");
         } catch (IOException e) {
             e.printStackTrace();
