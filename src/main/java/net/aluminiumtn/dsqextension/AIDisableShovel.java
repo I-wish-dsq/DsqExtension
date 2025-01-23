@@ -1,12 +1,11 @@
 package net.aluminiumtn.dsqextension;
 
-
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.ZombieVillagerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
 public class AIDisableShovel {
@@ -21,8 +20,10 @@ public class AIDisableShovel {
                     if (target instanceof MobEntity mobEntity) {
                         if (mobEntity.isAiDisabled()) {
                             mobEntity.setAiDisabled(false);
+                            mobEntity.setHealth(mobEntity.getMaxHealth());
                         } else {
                             mobEntity.setAiDisabled(true);
+                            player.sendMessage(Text.literal("AI disabled for " + mobEntity.getName().getString()), true);
                             return ActionResult.SUCCESS;
                         }
                     }

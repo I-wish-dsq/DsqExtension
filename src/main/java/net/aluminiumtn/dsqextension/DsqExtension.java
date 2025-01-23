@@ -24,6 +24,7 @@ public class DsqExtension implements ModInitializer {
         }
         registerCommands();
         ZombiePigmanAggro.register();
+        AIDisableShovel.register();
     }
 
     private void registerCommands() {
