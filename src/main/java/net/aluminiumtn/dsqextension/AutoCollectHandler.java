@@ -2,15 +2,15 @@ package net.aluminiumtn.dsqextension;
 
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld; // Добавлен импорт
 
 public class AutoCollectHandler {
 
@@ -24,7 +24,20 @@ public class AutoCollectHandler {
                 Block block = state.getBlock();
 
                 if (block instanceof ShulkerBoxBlock) {
-                    return true;
+                    if (blockEntity instanceof ShulkerBoxBlockEntity) {
+                        var droppedStacks = Block.getDroppedStacks(state, (ServerWorld) world, pos, blockEntity, player, player.getMainHandStack());
+                        
+                        if (!droppedStacks.isEmpty()) {
+                            ItemStack shulkerStack = droppedStacks.get(0); 
+
+                            if (!player.getInventory().insertStack(shulkerStack)) {
+                                player.dropItem(shulkerStack, false);
+                            }
+                            
+                            world.setBlockState(pos, state.getFluidState().getBlockState(), 3);
+                            return false;
+                        }
+                    }
                 }
 
                 ItemStack stack = new ItemStack(block.asItem());
