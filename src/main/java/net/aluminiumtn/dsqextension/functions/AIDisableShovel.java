@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.aluminiumtn.dsqextension.config.ConfigHandler;
 
 public class AIDisableShovel {
     private static boolean eventsRegistered = false;

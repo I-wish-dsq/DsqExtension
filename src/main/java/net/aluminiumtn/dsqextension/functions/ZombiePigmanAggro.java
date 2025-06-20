@@ -8,6 +8,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.aluminiumtn.dsqextension.config.ConfigHandler;
 
 public class ZombiePigmanAggro {
     private static boolean eventsRegistered = false;

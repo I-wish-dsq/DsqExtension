@@ -1,4 +1,4 @@
-package net.aluminiumtn.dsqextension;
+package net.aluminiumtn.dsqextension.handler;
 
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -12,7 +12,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
-import net.aluminiumtn.dsqextension.ConfigHandler;
+import net.aluminiumtn.dsqextension.config.ConfigHandler;
 
 public class OldRaidHandler {
 

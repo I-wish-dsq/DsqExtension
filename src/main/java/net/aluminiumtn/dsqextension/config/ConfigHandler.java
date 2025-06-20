@@ -1,4 +1,4 @@
-package net.aluminiumtn.dsqextension;
+package net.aluminiumtn.dsqextension.config;
 
 import java.io.FileReader;
 import java.io.FileWriter;

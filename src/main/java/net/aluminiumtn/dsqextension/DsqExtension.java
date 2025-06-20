@@ -7,7 +7,9 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import net.aluminiumtn.dsqextension.OldRaidHandler;
+import net.aluminiumtn.dsqextension.config.ConfigHandler;
+import net.aluminiumtn.dsqextension.handler.AutoCollectHandler;
+import net.aluminiumtn.dsqextension.handler.OldRaidHandler;
 
 public class DsqExtension implements ModInitializer {
 

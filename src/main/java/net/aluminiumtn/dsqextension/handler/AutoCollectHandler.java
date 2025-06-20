@@ -1,4 +1,4 @@
-package net.aluminiumtn.dsqextension;
+package net.aluminiumtn.dsqextension.handler;
 
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.block.Block;
@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld; // Добавлен импорт
+import net.aluminiumtn.dsqextension.config.ConfigHandler;
 
 public class AutoCollectHandler {
 
