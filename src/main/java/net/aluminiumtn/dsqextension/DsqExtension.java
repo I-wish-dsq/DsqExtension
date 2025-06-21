@@ -10,8 +10,14 @@ import net.minecraft.text.Text;
 import net.aluminiumtn.dsqextension.config.ConfigHandler;
 import net.aluminiumtn.dsqextension.handler.AutoCollectHandler;
 import net.aluminiumtn.dsqextension.handler.OldRaidHandler;
+import net.minecraft.server.MinecraftServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DsqExtension implements ModInitializer {
+
+    public static final String MOD_ID = "dsqextension";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     private static boolean oldRaidsHandlerRegistered = false;
 
@@ -108,7 +114,17 @@ public class DsqExtension implements ModInitializer {
                             })
                     )
             )
-
+            .then(CommandManager.literal("reIntroduceInstantBlockUpdates")
+                    .then(CommandManager.argument("enabled", BoolArgumentType.bool())
+                            .executes(context -> {
+                                boolean enabled = BoolArgumentType.getBool(context, "enabled");
+                                ConfigHandler.setReIntroduceInstantBlockUpdatesEnabled(enabled);
+                                context.getSource().sendFeedback(() -> Text.literal("Instant block updates set to " + enabled), true);
+                                return 1;
+                            })
+                    )
+            )
     );
 }
+
 }

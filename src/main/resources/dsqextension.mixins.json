@@ -5,7 +5,22 @@
 	"mixins": [
 		"DsqMixin",
 		"TradeScreenHandlerMixin",
-		"MerchantScreenHandlerAccessor"
+		"MerchantScreenHandlerAccessor",
+		"MinecraftServerMixin",
+		"block_entities.BlockEntityMixin",
+		"block_entities.obtain.LecternBlockEntityMixin",
+		"block_entities.obtain.WorldChunkMixin",
+		"block_updates.RedstoneWireBlockMixin",
+		"block_updates.ShulkerBoxBlockMixin",
+		"block_updates.SimpleNeighborUpdaterMixin",
+		"block_updates.WorldMixin",
+		"misc.SystemDetailsMixin",
+		"blocks.floating.ComparatorBlockMixin",
+		"blocks.floating.RedstoneWireBlockMixin",
+		"blocks.floating.RepeaterBlockMixin",
+		"blocks.FullBlockCollisionsMixin$NetherPortalBlockMixin",
+		"blocks.FullBlockCollisionsMixin$EndPortalBlockMixin",
+		"blocks.FullBlockCollisionsMixin$PowderSnowBlockMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
