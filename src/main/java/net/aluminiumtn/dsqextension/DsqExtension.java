@@ -124,6 +124,16 @@ public class DsqExtension implements ModInitializer {
                             })
                     )
             )
+            .then(CommandManager.literal("updateSuppressionCrashFix")
+                    .then(CommandManager.argument("enabled", BoolArgumentType.bool())
+                            .executes(context -> {
+                                boolean enabled = BoolArgumentType.getBool(context, "enabled");
+                                ConfigHandler.setBringBackSOSuppressionEnabled(enabled);
+                                context.getSource().sendFeedback(() -> Text.literal("Update suppression crash fix set to " + enabled), true);
+                                return 1;
+                            })
+                    )
+            )
     );
 }
 

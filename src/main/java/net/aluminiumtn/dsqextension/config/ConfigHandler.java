@@ -144,6 +144,11 @@ public class ConfigHandler {
         return bringBackSOSuppression;
     }
 
+    public static void setBringBackSOSuppressionEnabled(boolean enabled) {
+        bringBackSOSuppression = enabled;
+        saveConfig();
+    }
+
     public static boolean isBringBackCCESuppressionEnabled() {
         return bringBackCCESuppression;
     }

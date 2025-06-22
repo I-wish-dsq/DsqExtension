@@ -8,8 +8,14 @@ import net.aluminiumtn.dsqextension.config.ConfigHandler;
 
 @Mixin(SimpleNeighborUpdater.class)
 public class SimpleNeighborUpdaterMixin {
-    @ModifyArg(method = "replaceWithStateForNeighborUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/block/NeighborUpdater;replaceWithStateForNeighborUpdate(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/Direction;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;II)V"),
-            index = 6)
+    @ModifyArg(
+            method = "replaceWithStateForNeighborUpdate",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/block/NeighborUpdater;replaceWithStateForNeighborUpdate(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/Direction;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;II)V"
+            ),
+            index = 6
+    )
     private int antishadowpatch$correctUpdateDepth(int maxUpdateDepth) {
         if (ConfigHandler.isReIntroduceInstantBlockUpdatesEnabled()) {
             return maxUpdateDepth + 1;
