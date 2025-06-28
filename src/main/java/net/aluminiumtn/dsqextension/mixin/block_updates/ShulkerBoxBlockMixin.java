@@ -18,7 +18,7 @@ public class ShulkerBoxBlockMixin
 			method = "getComparatorOutput",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/ScreenHandler;calculateComparatorOutput(Lnet/minecraft/block/entity/BlockEntity;)I")
 	)
-	private int antishadowpatch$bringBackCCESuppression(BlockEntity blockEntity, Operation<Integer> original) {
+	private int dsqextension$bringBackCCESuppression(BlockEntity blockEntity, Operation<Integer> original) {
 		if (ConfigHandler.isReIntroduceInstantBlockUpdatesEnabled()) {
 			return ScreenHandler.calculateComparatorOutput((Inventory) blockEntity);
 		}

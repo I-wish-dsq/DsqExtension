@@ -17,7 +17,7 @@ public class ComparatorBlockMixin {
             method = "getStateForNeighborUpdate",
             at = @At(value = "RETURN", ordinal = 0)
     )
-    private BlockState antishadowpatch$bringBackFloatingComparatorOnTrapdoor(BlockState state, @Local(ordinal = 0, argsOnly = true) BlockState original) {
+    private BlockState dsqextension$bringBackFloatingComparatorOnTrapdoor(BlockState state, @Local(ordinal = 0, argsOnly = true) BlockState original) {
         if (ConfigHandler.isBringBackFloatingRedstoneComponentsOnTopOfTrapdoorEnabled()) {
             return original;
         }

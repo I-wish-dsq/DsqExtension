@@ -16,7 +16,7 @@ public class SimpleNeighborUpdaterMixin {
             ),
             index = 6
     )
-    private int antishadowpatch$correctUpdateDepth(int maxUpdateDepth) {
+    private int dsqextension$correctUpdateDepth(int maxUpdateDepth) {
         if (ConfigHandler.isReIntroduceInstantBlockUpdatesEnabled()) {
             return maxUpdateDepth + 1;
         }

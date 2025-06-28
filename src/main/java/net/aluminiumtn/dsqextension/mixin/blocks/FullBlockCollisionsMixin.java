@@ -21,7 +21,7 @@ public class FullBlockCollisionsMixin {
     @Mixin(NetherPortalBlock.class)
     public static class NetherPortalBlockMixin {
         @Redirect(method = "getInsideCollisionShape", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getOutlineShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/util/shape/VoxelShape;"))
-        private VoxelShape antishadowpatch$bringBackFullBlockCollision(BlockState state, BlockView blockView, BlockPos blockPos) {
+        private VoxelShape dsqextension$bringBackFullBlockCollision(BlockState state, BlockView blockView, BlockPos blockPos) {
             if (ConfigHandler.isBringBackFullBlockInnerCollisionsEnabled()) {
                 return VoxelShapes.fullCube();
             }
@@ -32,7 +32,7 @@ public class FullBlockCollisionsMixin {
     @Mixin(EndPortalBlock.class)
     public static class EndPortalBlockMixin {
         @Redirect(method = "getInsideCollisionShape", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getOutlineShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/util/shape/VoxelShape;"))
-        private VoxelShape antishadowpatch$bringBackFullBlockCollision(BlockState state, BlockView blockView, BlockPos blockPos) {
+        private VoxelShape dsqextension$bringBackFullBlockCollision(BlockState state, BlockView blockView, BlockPos blockPos) {
             if (ConfigHandler.isBringBackFullBlockInnerCollisionsEnabled()) {
                 return VoxelShapes.fullCube();
             }
@@ -43,7 +43,7 @@ public class FullBlockCollisionsMixin {
     @Mixin(PowderSnowBlock.class)
     public static class PowderSnowBlockMixin {
         @Inject(method = "getInsideCollisionShape", at = @At("HEAD"), cancellable = true)
-        private void antishadowpatch$bringBackFullBlockCollision(BlockState state, BlockView world, BlockPos pos, Entity entity, CallbackInfoReturnable<VoxelShape> cir) {
+        private void dsqextension$bringBackFullBlockCollision(BlockState state, BlockView world, BlockPos pos, Entity entity, CallbackInfoReturnable<VoxelShape> cir) {
             if (ConfigHandler.isBringBackFullBlockInnerCollisionsEnabled()) {
                 cir.setReturnValue(VoxelShapes.fullCube());
             }

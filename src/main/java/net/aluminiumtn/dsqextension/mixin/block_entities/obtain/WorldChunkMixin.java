@@ -40,7 +40,7 @@ public abstract class WorldChunkMixin extends Chunk {
             method = "setBlockState",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;onBlockReplaced(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V", ordinal = 0)
     )
-    private boolean antishadowpatch$preventUnwantedSideEffects(BlockEntity blockEntity, BlockPos pos, BlockState oldState) {
+    private boolean dsqextension$preventUnwantedSideEffects(BlockEntity blockEntity, BlockPos pos, BlockState oldState) {
         if (ConfigHandler.isReIntroduceInstantBlockUpdatesEnabled()) {
             return blockEntity.getType().supports(oldState);
         }
@@ -51,7 +51,7 @@ public abstract class WorldChunkMixin extends Chunk {
             method = "setBlockState",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/WorldChunk;removeBlockEntity(Lnet/minecraft/util/math/BlockPos;)V", ordinal = 0)
     )
-    private boolean antishadowpatch$preventRemoveBlockEntity(WorldChunk instance, BlockPos pos, @Local(ordinal = 1) BlockState oldState) {
+    private boolean dsqextension$preventRemoveBlockEntity(WorldChunk instance, BlockPos pos, @Local(ordinal = 1) BlockState oldState) {
         if (ConfigHandler.isReIntroduceInstantBlockUpdatesEnabled()) {
             return !ConfigHandler.isBringBackFurnaceXPDupeEnabled() && oldState.isOf(Blocks.FURNACE);
         }
@@ -59,7 +59,7 @@ public abstract class WorldChunkMixin extends Chunk {
     }
 
     @Inject(method = "setBlockState", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z", ordinal = 1))
-    private void antishadowpatch$moveRemoveBlockEntity(BlockPos pos, BlockState newState, int flags, CallbackInfoReturnable<BlockState> cir, @Local(ordinal = 1) BlockState oldState) {
+    private void dsqextension$moveRemoveBlockEntity(BlockPos pos, BlockState newState, int flags, CallbackInfoReturnable<BlockState> cir, @Local(ordinal = 1) BlockState oldState) {
         if (ConfigHandler.isReIntroduceInstantBlockUpdatesEnabled()) {
             boolean shouldRemoveIfFurnace = ConfigHandler.isBringBackFurnaceXPDupeEnabled() || !oldState.isOf(Blocks.FURNACE);
 
@@ -69,8 +69,8 @@ public abstract class WorldChunkMixin extends Chunk {
         }
     }
 
-    @Redirect(method = "setBlockEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntityType;supports(Lnet/minecraft/block/BlockState;)Z"))
-    private boolean antishadowpatch$allowSettingUnsupportedBlockEntity(BlockEntityType instance, BlockState state) {
+    @Redirect(method = "setBlockEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/lockEntblock/entity/BityType;supports(Lnet/minecraft/block/BlockState;)Z"))
+    private boolean dsqextension$allowSettingUnsupportedBlockEntity(BlockEntityType instance, BlockState state) {
         if (ConfigHandler.isReIntroduceInstantBlockUpdatesEnabled()) {
             return true;
         }

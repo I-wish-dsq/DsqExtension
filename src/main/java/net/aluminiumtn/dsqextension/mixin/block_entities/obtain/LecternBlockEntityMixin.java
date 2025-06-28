@@ -16,7 +16,7 @@ public abstract class LecternBlockEntityMixin {
 
     // In 1.21.5 Mojang removed this method call
     @Inject(method = "onBlockReplaced", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z", shift = At.Shift.AFTER))
-    private void antishadowpatch$updateBlockEntity(BlockPos pos, BlockState oldState, CallbackInfo ci) {
+    private void dsqextension$updateBlockEntity(BlockPos pos, BlockState oldState, CallbackInfo ci) {
         if (ConfigHandler.isReIntroduceInstantBlockUpdatesEnabled()) {
             clear();
         }

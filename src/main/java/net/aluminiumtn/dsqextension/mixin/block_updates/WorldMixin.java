@@ -22,7 +22,7 @@ public class WorldMixin {
 
     //Just replaces the default neighbor updater with the simple one(for some reason Mojang left the pre 1.19 neighbor updater in the game)
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void antishadowpatch$bringBackStackOverflowSuppression(CallbackInfo ci) {
+    private void dsqextension$bringBackStackOverflowSuppression(CallbackInfo ci) {
         if (ConfigHandler.isReIntroduceInstantBlockUpdatesEnabled()) {
             this.neighborUpdater = new SimpleNeighborUpdater((World) (Object) this);
         }

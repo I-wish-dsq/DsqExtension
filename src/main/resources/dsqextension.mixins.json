@@ -15,6 +15,7 @@
 		"block_updates.SimpleNeighborUpdaterMixin",
 		"block_updates.WorldMixin",
 		"misc.SystemDetailsMixin",
+		"misc.DataFixerBuilderMixin",
 		"blocks.floating.ComparatorBlockMixin",
 		"blocks.floating.RedstoneWireBlockMixin",
 		"blocks.floating.RepeaterBlockMixin",

@@ -13,6 +13,7 @@ public class ConfigHandler {
     private static boolean returnVoidTradeEnabled = false;
     private static boolean returnExpFromPigmansEnabled = false;
     private static boolean AIDisableShovelEnabled = false;
+    private static boolean disableDeleteLightDataFixerEnabled = false;
 
     // AntiShadowPatch options
     private static boolean bringBackSOSuppression = true;
@@ -52,6 +53,7 @@ public class ConfigHandler {
         AIDisableShovelEnabled = Boolean.parseBoolean(properties.getProperty("AIDisableShovelEnabled", "false"));
         reIntroduceInstantBlockUpdatesEnabled = Boolean.parseBoolean(properties.getProperty("reIntroduceInstantBlockUpdates", "false"));
         cceSuppressorChatMessageEnabled = Boolean.parseBoolean(properties.getProperty("cceSuppressorChatMessageEnabled", "false"));
+        disableDeleteLightDataFixerEnabled = Boolean.parseBoolean(properties.getProperty("disableDeleteLightDataFixer", "false"));
 
         // AntiShadowPatch options
         bringBackSOSuppression = Boolean.parseBoolean(properties.getProperty("bringBackSOSuppression", "true"));
@@ -136,6 +138,15 @@ public class ConfigHandler {
 
     public static void setCceSuppressorChatMessageEnabled(boolean enabled) {
         cceSuppressorChatMessageEnabled = enabled;
+        saveConfig();
+    }
+
+    public static boolean isDisableDeleteLightDataFixerEnabled() {
+        return disableDeleteLightDataFixerEnabled;
+    }
+
+    public static void setDisableDeleteLightDataFixerEnabled(boolean enabled) {
+        disableDeleteLightDataFixerEnabled = enabled;
         saveConfig();
     }
 
@@ -234,6 +245,7 @@ public class ConfigHandler {
         properties.setProperty("AIDisableShovel", Boolean.toString(AIDisableShovelEnabled));
         properties.setProperty("reIntroduceInstantBlockUpdates", Boolean.toString(reIntroduceInstantBlockUpdatesEnabled));
         properties.setProperty("cceSuppressorChatMessageEnabled", Boolean.toString(cceSuppressorChatMessageEnabled));
+        properties.setProperty("disableDeleteLightDataFixer", Boolean.toString(disableDeleteLightDataFixerEnabled));
 
         // AntiShadowPatch options
         properties.setProperty("bringBackSOSuppression", Boolean.toString(bringBackSOSuppression));

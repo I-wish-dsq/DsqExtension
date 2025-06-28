@@ -134,6 +134,16 @@ public class DsqExtension implements ModInitializer {
                             })
                     )
             )
+            .then(CommandManager.literal("disableDeleteLightDataFixer")
+                    .then(CommandManager.argument("enabled", BoolArgumentType.bool())
+                            .executes(context -> {
+                                boolean enabled = BoolArgumentType.getBool(context, "enabled");
+                                ConfigHandler.setDisableDeleteLightDataFixerEnabled(enabled);
+                                context.getSource().sendFeedback(() -> Text.literal("Disable delete light data fixer set to " + enabled), true);
+                                return 1;
+                            })
+                    )
+            )
     );
 }
 

@@ -15,7 +15,7 @@ public class RedstoneWireBlockMixin {
             method = "getStateForNeighborUpdate",
             at = @At(value = "RETURN", ordinal = 0)
     )
-    private BlockState antishadowpatch$bringBackFloatingRedstoneOnTrapdoor(BlockState state, @Local(ordinal = 0, argsOnly = true) BlockState original) {
+    private BlockState dsqextension$bringBackFloatingRedstoneOnTrapdoor(BlockState state, @Local(ordinal = 0, argsOnly = true) BlockState original) {
         if (ConfigHandler.isBringBackFloatingRedstoneComponentsOnTopOfTrapdoorEnabled()) {
             return original;
         }

@@ -14,7 +14,7 @@ public class RedstoneWireBlockMixin {
     @WrapOperation(
             method = "getRenderConnectionType(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Z)Lnet/minecraft/block/enums/WireConnection;",
             constant = @Constant(classValue = TrapdoorBlock.class))
-    private boolean antishadowpatch$bringBackTrapdoorUpdateSkipping(Object obj, Operation<Boolean> original) {
+    private boolean dsqextension$bringBackTrapdoorUpdateSkipping(Object obj, Operation<Boolean> original) {
         if (ConfigHandler.isReIntroduceInstantBlockUpdatesEnabled()) {
             return false;
         }
