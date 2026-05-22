@@ -1,16 +1,16 @@
 package net.aluminiumtn.dsqextension.handler;
 
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.minecraft.block.Block;
-import net.minecraft.block.ShulkerBoxBlock;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.ShulkerBoxBlockEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.world.ServerWorld; // Добавлен импорт
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ShulkerBoxBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.aluminiumtn.dsqextension.config.ConfigHandler;
 
 public class AutoCollectHandler {
@@ -19,23 +19,23 @@ public class AutoCollectHandler {
         PlayerBlockBreakEvents.BEFORE.register(AutoCollectHandler::onBlockBreak);
     }
 
-    private static boolean onBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
-        if (!world.isClient && ConfigHandler.isSneakingItemsEnabled()) {
-            if (player.isSneaking()) {
+    private static boolean onBlockBreak(Level level, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+        if (!level.isClientSide() && ConfigHandler.isSneakingItemsEnabled()) {
+            if (player.isShiftKeyDown()) {
                 Block block = state.getBlock();
 
                 if (block instanceof ShulkerBoxBlock) {
                     if (blockEntity instanceof ShulkerBoxBlockEntity) {
-                        var droppedStacks = Block.getDroppedStacks(state, (ServerWorld) world, pos, blockEntity, player, player.getMainHandStack());
-                        
-                        if (!droppedStacks.isEmpty()) {
-                            ItemStack shulkerStack = droppedStacks.get(0); 
+                        var droppedStacks = Block.getDrops(state, (ServerLevel) level, pos, blockEntity, player, player.getMainHandItem());
 
-                            if (!player.getInventory().insertStack(shulkerStack)) {
-                                player.dropItem(shulkerStack, false);
+                        if (!droppedStacks.isEmpty()) {
+                            ItemStack shulkerStack = droppedStacks.get(0);
+
+                            if (!player.getInventory().add(shulkerStack)) {
+                                player.drop(shulkerStack, false);
                             }
-                            
-                            world.setBlockState(pos, state.getFluidState().getBlockState(), 3);
+
+                            level.setBlock(pos, state.getFluidState().createLegacyBlock(), 3);
                             return false;
                         }
                     }
@@ -43,14 +43,14 @@ public class AutoCollectHandler {
 
                 ItemStack stack = new ItemStack(block.asItem());
                 if (!stack.isEmpty()) {
-                    if (!player.getInventory().insertStack(stack)) {
-                        player.dropItem(stack, false);
+                    if (!player.getInventory().add(stack)) {
+                        player.drop(stack, false);
                     }
-                    world.setBlockState(pos, state.getFluidState().getBlockState(), 3);
-                    return false; 
+                    level.setBlock(pos, state.getFluidState().createLegacyBlock(), 3);
+                    return false;
                 }
             }
         }
-        return true; 
+        return true;
     }
 }

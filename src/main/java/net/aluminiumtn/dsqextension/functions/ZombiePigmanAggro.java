@@ -1,52 +1,52 @@
-package net.aluminiumtn.dsqextension;
+package net.aluminiumtn.dsqextension.functions;
 
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
-import net.minecraft.entity.mob.ZombifiedPiglinEntity;
-import net.minecraft.entity.ExperienceOrbEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.monster.zombie.ZombifiedPiglin;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.level.Level;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.aluminiumtn.dsqextension.config.ConfigHandler;
 
 public class ZombiePigmanAggro {
     private static boolean eventsRegistered = false;
-    
-    private static final AttackEntityCallback ATTACK_CALLBACK = (player, world, hand, entity, hitResult) -> {
-        if (entity instanceof ZombifiedPiglinEntity && ConfigHandler.isReturnExpFromPigmansEnabled()) {
+
+    private static final AttackEntityCallback ATTACK_CALLBACK = (player, level, hand, entity, hitResult) -> {
+        if (entity instanceof ZombifiedPiglin && ConfigHandler.isReturnExpFromPigmansEnabled()) {
             double radius = 16.0D;
-            Box box = new Box(
-                entity.getX() - radius, entity.getY() - radius, entity.getZ() - radius,
-                entity.getX() + radius, entity.getY() + radius, entity.getZ() + radius
+            AABB box = new AABB(
+                    entity.getX() - radius, entity.getY() - radius, entity.getZ() - radius,
+                    entity.getX() + radius, entity.getY() + radius, entity.getZ() + radius
             );
 
-            world.getEntitiesByClass(ZombifiedPiglinEntity.class, box, zombiePigman -> true)
-                .forEach(nearbyPigman -> {
-                    nearbyPigman.setAngryAt(player.getUuid());
-                    nearbyPigman.setAngerTime(400);
-                });
+            level.getEntitiesOfClass(ZombifiedPiglin.class, box, zombiePigman -> true)
+                    .forEach(nearbyPigman -> {
+                        nearbyPigman.setTarget(player.asLivingEntity());
+                        nearbyPigman.setPersistentAngerEndTime(400);
+                    });
         }
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     };
 
     private static final ServerLivingEntityEvents.AfterDeath DEATH_CALLBACK = (entity, source) -> {
-        if (entity instanceof ZombifiedPiglinEntity zombiePiglin && ConfigHandler.isReturnExpFromPigmansEnabled()) {
-            if (zombiePiglin.getAngerTime() > 0) {
-                World world = entity.getWorld();
-                if (!world.isClient) {
+        if (entity instanceof ZombifiedPiglin zombiePiglin && ConfigHandler.isReturnExpFromPigmansEnabled()) {
+            if (zombiePiglin.getPersistentAngerEndTime() > 0) {
+                Level level = entity.level();
+                if (!level.isClientSide()) {
                     int xp = 5;
                     while (xp > 0) {
                         int dropXp = Math.min(xp, 7);
                         xp -= dropXp;
-                        ExperienceOrbEntity experienceOrb = new ExperienceOrbEntity(
-                            world,
-                            entity.getX(),
-                            entity.getY(),
-                            entity.getZ(),
-                            dropXp
+                        ExperienceOrb experienceOrb = new ExperienceOrb(
+                                level,
+                                entity.getX(),
+                                entity.getY(),
+                                entity.getZ(),
+                                dropXp
                         );
-                        world.spawnEntity(experienceOrb);
+                        level.addFreshEntity(experienceOrb);
                     }
                 }
             }
@@ -64,4 +64,4 @@ public class ZombiePigmanAggro {
     public static void unregister() {
         eventsRegistered = false;
     }
-} 
+}
