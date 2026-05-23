@@ -15,13 +15,14 @@ public class AIDisableShovel {
     private static final AttackEntityCallback ATTACK_CALLBACK = (player, level, hand, entity, hitResult) -> {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (stack.getItem() == Items.WOODEN_SHOVEL && ConfigHandler.isAIDisableShovel()) {
+        if (player.isShiftKeyDown() && stack.getItem() == Items.WOODEN_SHOVEL && ConfigHandler.isAIDisableShovel()) {
             if (entity instanceof LivingEntity target) {
                 if (!level.isClientSide()) {
                     if (target instanceof Mob mobEntity) {
                         if (mobEntity.isNoAi()) {
                             mobEntity.setNoAi(false);
                             mobEntity.setHealth(mobEntity.getMaxHealth());
+                            return InteractionResult.FAIL;
                         } else {
                             mobEntity.setNoAi(true);
 

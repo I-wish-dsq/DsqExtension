@@ -1,13 +1,17 @@
 package net.aluminiumtn.dsqextension.config;
 
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class ConfigHandler {
 
-    private static final String CONFIG_FILE = "config/dsqextension.conf";
+    private static final Path CONFIG_FILE = Paths.get("config", "dsqextension.conf");
+
     private static boolean sneakingItemsEnabled = false;
     private static boolean reIntroduceOldRaidsEnabled = false;
     private static boolean returnVoidTradeEnabled = false;
@@ -40,42 +44,107 @@ public class ConfigHandler {
     private static boolean reIntroduceInstantBlockUpdatesEnabled = false;
 
     static {
-        Properties properties = new Properties();
-        try (FileReader reader = new FileReader(CONFIG_FILE)) {
-            properties.load(reader);
-        } catch (IOException e) {
-            // It's okay if the file doesn't exist, we'll create it on first save.
-        }
-        sneakingItemsEnabled = Boolean.parseBoolean(properties.getProperty("sneakingItems", "false"));
-        reIntroduceOldRaidsEnabled = Boolean.parseBoolean(properties.getProperty("reIntroduceOldRaids", "false"));
-        returnVoidTradeEnabled = Boolean.parseBoolean(properties.getProperty("returnVoidTradeEnabled", "false"));
-        returnExpFromPigmansEnabled = Boolean.parseBoolean(properties.getProperty("returnExpFromPigmansEnabled", "false"));
-        AIDisableShovelEnabled = Boolean.parseBoolean(properties.getProperty("AIDisableShovelEnabled", "false"));
-        reIntroduceInstantBlockUpdatesEnabled = Boolean.parseBoolean(properties.getProperty("reIntroduceInstantBlockUpdates", "false"));
-        cceSuppressorChatMessageEnabled = Boolean.parseBoolean(properties.getProperty("cceSuppressorChatMessageEnabled", "false"));
-        disableDeleteLightDataFixerEnabled = Boolean.parseBoolean(properties.getProperty("disableDeleteLightDataFixer", "false"));
+        loadConfig();
+    }
 
-        // AntiShadowPatch options
-        bringBackSOSuppression = Boolean.parseBoolean(properties.getProperty("bringBackSOSuppression", "true"));
-        bringBackCCESuppression = Boolean.parseBoolean(properties.getProperty("bringBackCCESuppression", "true"));
-        bringBackTrapdoorUpdateSkipping = Boolean.parseBoolean(properties.getProperty("bringBackTrapdoorUpdateSkipping", "true"));
-        bringBackFloatingRedstoneComponentsOnTopOfTrapdoor = Boolean.parseBoolean(properties.getProperty("bringBackFloatingRedstoneComponentsOnTopOfTrapdoor", "true"));
-        bringBackFurnaceXPDupe = Boolean.parseBoolean(properties.getProperty("bringBackFurnaceXPDupe", "true"));
-        bringBackFullBlockInnerCollisions = Boolean.parseBoolean(properties.getProperty("bringBackFullBlockInnerCollisions", "false"));
-        bringBackBlockEntitySwap = Boolean.parseBoolean(properties.getProperty("bringBackBlockEntitySwap", "true"));
-        keepBlocksWithSwappedBlockEntities = Boolean.parseBoolean(properties.getProperty("keepBlocksWithSwappedBlockEntities", "true"));
-        bringBackItemShadowing_1_17 = Boolean.parseBoolean(properties.getProperty("bringBackItemShadowing_1_17", "true"));
-        bringBackItemShadowing_1_18 = Boolean.parseBoolean(properties.getProperty("bringBackItemShadowing_1_18", "true"));
-        bringBackCurseBookOverstacking = Boolean.parseBoolean(properties.getProperty("bringBackCurseBookOverstacking", "false"));
-        bringBackOverstackedItemMovement_1_20 = Boolean.parseBoolean(properties.getProperty("bringBackOverstackedItemMovement_1_20", "false"));
-        bringBackChunkSaveState_1_14 = Boolean.parseBoolean(properties.getProperty("bringBackChunkSaveState_1_14", "false"));
-        bringBackChunkSaveState_1_21 = Boolean.parseBoolean(properties.getProperty("bringBackChunkSaveState_1_21", "false"));
-        bringBackOldDragonFreezing = Boolean.parseBoolean(properties.getProperty("bringBackOldDragonFreezing", "true"));
-        bringBackArmorStandInvulnerableToWitherDamage = Boolean.parseBoolean(properties.getProperty("bringBackArmorStandInvulnerableToWitherDamage", "true"));
-        bringBackShadowItemsInMobInventory = Boolean.parseBoolean(properties.getProperty("bringBackShadowItemsInMobInventory", "true"));
-        bringBackVoidlessVoidTrading = Boolean.parseBoolean(properties.getProperty("bringBackVoidlessVoidTrading", "true"));
-        bringBackGracefulSOHandling = Boolean.parseBoolean(properties.getProperty("bringBackGracefulSOHandling", "true"));
-        bringBackGracefulOOMHandling = Boolean.parseBoolean(properties.getProperty("bringBackGracefulOOMHandling", "true"));
+    public static void loadConfig() {
+        try {
+            if (!Files.exists(CONFIG_FILE.getParent())) {
+                Files.createDirectories(CONFIG_FILE.getParent());
+            }
+
+            if (!Files.exists(CONFIG_FILE)) {
+                saveConfig();
+                return;
+            }
+
+            Properties properties = new Properties();
+            try (Reader reader = Files.newBufferedReader(CONFIG_FILE)) {
+                properties.load(reader);
+            }
+
+            sneakingItemsEnabled = Boolean.parseBoolean(properties.getProperty("sneakingItems", "false"));
+            reIntroduceOldRaidsEnabled = Boolean.parseBoolean(properties.getProperty("reIntroduceOldRaids", "false"));
+            returnVoidTradeEnabled = Boolean.parseBoolean(properties.getProperty("returnVoidTradeEnabled", "false"));
+            returnExpFromPigmansEnabled = Boolean.parseBoolean(properties.getProperty("returnExpFromPigmansEnabled", "false"));
+            AIDisableShovelEnabled = Boolean.parseBoolean(properties.getProperty("AIDisableShovel", "false"));
+            reIntroduceInstantBlockUpdatesEnabled = Boolean.parseBoolean(properties.getProperty("reIntroduceInstantBlockUpdates", "false"));
+            cceSuppressorChatMessageEnabled = Boolean.parseBoolean(properties.getProperty("cceSuppressorChatMessageEnabled", "false"));
+            disableDeleteLightDataFixerEnabled = Boolean.parseBoolean(properties.getProperty("disableDeleteLightDataFixer", "false"));
+
+            // AntiShadowPatch options
+            bringBackSOSuppression = Boolean.parseBoolean(properties.getProperty("bringBackSOSuppression", "true"));
+            bringBackCCESuppression = Boolean.parseBoolean(properties.getProperty("bringBackCCESuppression", "true"));
+            bringBackTrapdoorUpdateSkipping = Boolean.parseBoolean(properties.getProperty("bringBackTrapdoorUpdateSkipping", "true"));
+            bringBackFloatingRedstoneComponentsOnTopOfTrapdoor = Boolean.parseBoolean(properties.getProperty("bringBackFloatingRedstoneComponentsOnTopOfTrapdoor", "true"));
+            bringBackFurnaceXPDupe = Boolean.parseBoolean(properties.getProperty("bringBackFurnaceXPDupe", "true"));
+            bringBackFullBlockInnerCollisions = Boolean.parseBoolean(properties.getProperty("bringBackFullBlockInnerCollisions", "false"));
+            bringBackBlockEntitySwap = Boolean.parseBoolean(properties.getProperty("bringBackBlockEntitySwap", "true"));
+            keepBlocksWithSwappedBlockEntities = Boolean.parseBoolean(properties.getProperty("keepBlocksWithSwappedBlockEntities", "true"));
+            bringBackItemShadowing_1_17 = Boolean.parseBoolean(properties.getProperty("bringBackItemShadowing_1_17", "true"));
+            bringBackItemShadowing_1_18 = Boolean.parseBoolean(properties.getProperty("bringBackItemShadowing_1_18", "true"));
+            bringBackCurseBookOverstacking = Boolean.parseBoolean(properties.getProperty("bringBackCurseBookOverstacking", "false"));
+            bringBackOverstackedItemMovement_1_20 = Boolean.parseBoolean(properties.getProperty("bringBackOverstackedItemMovement_1_20", "false"));
+            bringBackChunkSaveState_1_14 = Boolean.parseBoolean(properties.getProperty("bringBackChunkSaveState_1_14", "false"));
+            bringBackChunkSaveState_1_21 = Boolean.parseBoolean(properties.getProperty("bringBackChunkSaveState_1_21", "false"));
+            bringBackOldDragonFreezing = Boolean.parseBoolean(properties.getProperty("bringBackOldDragonFreezing", "true"));
+            bringBackArmorStandInvulnerableToWitherDamage = Boolean.parseBoolean(properties.getProperty("bringBackArmorStandInvulnerableToWitherDamage", "true"));
+            bringBackShadowItemsInMobInventory = Boolean.parseBoolean(properties.getProperty("bringBackShadowItemsInMobInventory", "true"));
+            bringBackVoidlessVoidTrading = Boolean.parseBoolean(properties.getProperty("bringBackVoidlessVoidTrading", "true"));
+            bringBackGracefulSOHandling = Boolean.parseBoolean(properties.getProperty("bringBackGracefulSOHandling", "true"));
+            bringBackGracefulOOMHandling = Boolean.parseBoolean(properties.getProperty("bringBackGracefulOOMHandling", "true"));
+
+        } catch (Exception e) {
+            System.err.println("[DSQExtension] Failed to load config file!");
+            e.printStackTrace();
+        }
+    }
+
+    public static void saveConfig() {
+        try {
+            if (!Files.exists(CONFIG_FILE.getParent())) {
+                Files.createDirectories(CONFIG_FILE.getParent());
+            }
+
+            Properties properties = new Properties();
+            properties.setProperty("sneakingItems", Boolean.toString(sneakingItemsEnabled));
+            properties.setProperty("reIntroduceOldRaids", Boolean.toString(reIntroduceOldRaidsEnabled));
+            properties.setProperty("returnVoidTradeEnabled", Boolean.toString(returnVoidTradeEnabled));
+            properties.setProperty("returnExpFromPigmansEnabled", Boolean.toString(returnExpFromPigmansEnabled));
+            properties.setProperty("AIDisableShovel", Boolean.toString(AIDisableShovelEnabled));
+            properties.setProperty("reIntroduceInstantBlockUpdates", Boolean.toString(reIntroduceInstantBlockUpdatesEnabled));
+            properties.setProperty("cceSuppressorChatMessageEnabled", Boolean.toString(cceSuppressorChatMessageEnabled));
+            properties.setProperty("disableDeleteLightDataFixer", Boolean.toString(disableDeleteLightDataFixerEnabled));
+
+            // AntiShadowPatch options
+            properties.setProperty("bringBackSOSuppression", Boolean.toString(bringBackSOSuppression));
+            properties.setProperty("bringBackCCESuppression", Boolean.toString(bringBackCCESuppression));
+            properties.setProperty("bringBackTrapdoorUpdateSkipping", Boolean.toString(bringBackTrapdoorUpdateSkipping));
+            properties.setProperty("bringBackFloatingRedstoneComponentsOnTopOfTrapdoor", Boolean.toString(bringBackFloatingRedstoneComponentsOnTopOfTrapdoor));
+            properties.setProperty("bringBackFurnaceXPDupe", Boolean.toString(bringBackFurnaceXPDupe));
+            properties.setProperty("bringBackFullBlockInnerCollisions", Boolean.toString(bringBackFullBlockInnerCollisions));
+            properties.setProperty("bringBackBlockEntitySwap", Boolean.toString(bringBackBlockEntitySwap));
+            properties.setProperty("keepBlocksWithSwappedBlockEntities", Boolean.toString(keepBlocksWithSwappedBlockEntities));
+            properties.setProperty("bringBackItemShadowing_1_17", Boolean.toString(bringBackItemShadowing_1_17));
+            properties.setProperty("bringBackItemShadowing_1_18", Boolean.toString(bringBackItemShadowing_1_18));
+            properties.setProperty("bringBackCurseBookOverstacking", Boolean.toString(bringBackCurseBookOverstacking));
+            properties.setProperty("bringBackOverstackedItemMovement_1_20", Boolean.toString(bringBackOverstackedItemMovement_1_20));
+            properties.setProperty("bringBackChunkSaveState_1_14", Boolean.toString(bringBackChunkSaveState_1_14));
+            properties.setProperty("bringBackChunkSaveState_1_21", Boolean.toString(bringBackChunkSaveState_1_21));
+            properties.setProperty("bringBackOldDragonFreezing", Boolean.toString(bringBackOldDragonFreezing));
+            properties.setProperty("bringBackArmorStandInvulnerableToWitherDamage", Boolean.toString(bringBackArmorStandInvulnerableToWitherDamage));
+            properties.setProperty("bringBackShadowItemsInMobInventory", Boolean.toString(bringBackShadowItemsInMobInventory));
+            properties.setProperty("bringBackVoidlessVoidTrading", Boolean.toString(bringBackVoidlessVoidTrading));
+            properties.setProperty("bringBackGracefulSOHandling", Boolean.toString(bringBackGracefulSOHandling));
+            properties.setProperty("bringBackGracefulOOMHandling", Boolean.toString(bringBackGracefulOOMHandling));
+
+            try (Writer writer = Files.newBufferedWriter(CONFIG_FILE)) {
+                properties.store(writer, "DSQ Extension Config");
+            }
+        } catch (Exception e) {
+            System.err.println("[DSQExtension] Failed to save config file!");
+            e.printStackTrace();
+        }
     }
 
     public static boolean isSneakingItemsEnabled() {
@@ -234,45 +303,5 @@ public class ConfigHandler {
 
     public static boolean isBringBackGracefulOOMHandlingEnabled() {
         return bringBackGracefulOOMHandling;
-    }
-
-    private static void saveConfig() {
-        Properties properties = new Properties();
-        properties.setProperty("sneakingItems", Boolean.toString(sneakingItemsEnabled));
-        properties.setProperty("reIntroduceOldRaids", Boolean.toString(reIntroduceOldRaidsEnabled));
-        properties.setProperty("returnVoidTradeEnabled", Boolean.toString(returnVoidTradeEnabled));
-        properties.setProperty("returnExpFromPigmansEnabled", Boolean.toString(returnExpFromPigmansEnabled));
-        properties.setProperty("AIDisableShovel", Boolean.toString(AIDisableShovelEnabled));
-        properties.setProperty("reIntroduceInstantBlockUpdates", Boolean.toString(reIntroduceInstantBlockUpdatesEnabled));
-        properties.setProperty("cceSuppressorChatMessageEnabled", Boolean.toString(cceSuppressorChatMessageEnabled));
-        properties.setProperty("disableDeleteLightDataFixer", Boolean.toString(disableDeleteLightDataFixerEnabled));
-
-        // AntiShadowPatch options
-        properties.setProperty("bringBackSOSuppression", Boolean.toString(bringBackSOSuppression));
-        properties.setProperty("bringBackCCESuppression", Boolean.toString(bringBackCCESuppression));
-        properties.setProperty("bringBackTrapdoorUpdateSkipping", Boolean.toString(bringBackTrapdoorUpdateSkipping));
-        properties.setProperty("bringBackFloatingRedstoneComponentsOnTopOfTrapdoor", Boolean.toString(bringBackFloatingRedstoneComponentsOnTopOfTrapdoor));
-        properties.setProperty("bringBackFurnaceXPDupe", Boolean.toString(bringBackFurnaceXPDupe));
-        properties.setProperty("bringBackFullBlockInnerCollisions", Boolean.toString(bringBackFullBlockInnerCollisions));
-        properties.setProperty("bringBackBlockEntitySwap", Boolean.toString(bringBackBlockEntitySwap));
-        properties.setProperty("keepBlocksWithSwappedBlockEntities", Boolean.toString(keepBlocksWithSwappedBlockEntities));
-        properties.setProperty("bringBackItemShadowing_1_17", Boolean.toString(bringBackItemShadowing_1_17));
-        properties.setProperty("bringBackItemShadowing_1_18", Boolean.toString(bringBackItemShadowing_1_18));
-        properties.setProperty("bringBackCurseBookOverstacking", Boolean.toString(bringBackCurseBookOverstacking));
-        properties.setProperty("bringBackOverstackedItemMovement_1_20", Boolean.toString(bringBackOverstackedItemMovement_1_20));
-        properties.setProperty("bringBackChunkSaveState_1_14", Boolean.toString(bringBackChunkSaveState_1_14));
-        properties.setProperty("bringBackChunkSaveState_1_21", Boolean.toString(bringBackChunkSaveState_1_21));
-        properties.setProperty("bringBackOldDragonFreezing", Boolean.toString(bringBackOldDragonFreezing));
-        properties.setProperty("bringBackArmorStandInvulnerableToWitherDamage", Boolean.toString(bringBackArmorStandInvulnerableToWitherDamage));
-        properties.setProperty("bringBackShadowItemsInMobInventory", Boolean.toString(bringBackShadowItemsInMobInventory));
-        properties.setProperty("bringBackVoidlessVoidTrading", Boolean.toString(bringBackVoidlessVoidTrading));
-        properties.setProperty("bringBackGracefulSOHandling", Boolean.toString(bringBackGracefulSOHandling));
-        properties.setProperty("bringBackGracefulOOMHandling", Boolean.toString(bringBackGracefulOOMHandling));
-
-        try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
-            properties.store(writer, "DSQ Extension Config");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

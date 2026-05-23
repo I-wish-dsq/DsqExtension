@@ -26,6 +26,8 @@ public class DsqExtension implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        ConfigHandler.loadConfig();
+
         AutoCollectHandler.register();
         TradeUnlocker.register();
         if (ConfigHandler.isReIntroduceOldRaidsEnabled()) {
