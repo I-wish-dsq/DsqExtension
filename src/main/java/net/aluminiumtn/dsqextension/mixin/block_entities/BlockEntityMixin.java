@@ -12,7 +12,7 @@ import net.aluminiumtn.dsqextension.config.ConfigHandler;
 public class BlockEntityMixin {
 
     @Inject(method = "isValidBlockState", at = @At("HEAD"), cancellable = true)
-    private void dsqextension$bringBackSwappedBlockEntitiesExistence(BlockState state, CallbackInfoReturnable<Boolean> cir) {
+    private void dsqextension$bringBackSwappedBlockEntitiesExistence(BlockState blockState, CallbackInfoReturnable<Boolean> cir) {
         if (ConfigHandler.isReIntroduceInstantBlockUpdatesEnabled()) {
             cir.setReturnValue(true);
         }

@@ -90,14 +90,3 @@ publishing {
 		// retrieving dependencies.
 	}
 }
-
-sourceSets {
-	main {
-		java {
-			exclude 'net/aluminiumtn/dsqextension/mixin/block_entities'
-			exclude 'net/aluminiumtn/dsqextension/mixin/block_updates'
-			exclude 'net/aluminiumtn/dsqextension/mixin/blocks'
-			exclude 'net/aluminiumtn/dsqextension/mixin/misc'
-		}
-	}
-}

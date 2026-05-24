@@ -8,12 +8,14 @@ import net.minecraft.world.level.block.TrapDoorBlock;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;
 
-@Mixin(RedstoneWireBlockMixin.class)
+@Mixin(RedStoneWireBlock.class)
 public class RedstoneWireBlockMixin {
 
     @WrapOperation(
-            method = "getRenderConnectionType(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Z)Lnet/minecraft/block/enums/WireConnection;",
-            constant = @Constant(classValue = TrapDoorBlock.class))
+            method = "getConnectingSide(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;Z)Lnet/minecraft/world/level/block/state/properties/RedstoneSide;",
+            constant = @Constant(classValue = TrapDoorBlock.class)
+    )
+
     private boolean dsqextension$bringBackTrapdoorUpdateSkipping(Object obj, Operation<Boolean> original) {
         if (ConfigHandler.isReIntroduceInstantBlockUpdatesEnabled()) {
             return false;

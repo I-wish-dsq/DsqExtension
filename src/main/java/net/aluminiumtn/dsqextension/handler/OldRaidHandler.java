@@ -23,7 +23,7 @@ public class OldRaidHandler {
 
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((server, entity, killedEntity, damageSource) -> {
             if (eventsRegistered && killedEntity instanceof Pillager pillager) {
-                if (isFlaggedPillager(pillager)) {
+                if (!pillager.hasActiveRaid() && isFlaggedPillager(pillager)) {
                     if (entity instanceof ServerPlayer player) {
                         applyOrIncreaseBadOmen(player);
                     }
@@ -55,7 +55,7 @@ public class OldRaidHandler {
         MobEffectInstance currentEffect = player.getEffect(MobEffects.BAD_OMEN);
         if (currentEffect != null) {
             int currentLevel = currentEffect.getAmplifier();
-            if (currentLevel < 4) {
+            if (currentLevel < 5) {
                 player.addEffect(new MobEffectInstance(MobEffects.BAD_OMEN, 6000, currentLevel + 1));
             }
         } else {

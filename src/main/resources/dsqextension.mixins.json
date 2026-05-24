@@ -1,13 +1,27 @@
 {
 	"required": true,
 	"package": "net.aluminiumtn.dsqextension.mixin",
-	"compatibilityLevel": "JAVA_17",
+	"compatibilityLevel": "JAVA_25",
 	"mixins": [
 		"DsqMixin",
 		"TradeScreenHandlerMixin",
 		"MerchantScreenHandlerAccessor",
-		"MinecraftServerMixin"
-
+		"MinecraftServerMixin",
+		"block_entities.obtain.LecternBlockEntityMixin",
+		"block_entities.obtain.LevelChunkMixin",
+		"block_entities.BlockEntityMixin",
+		"block_updates.RedstoneWireBlockMixin",
+		"block_updates.ShulkerBoxBlockMixin",
+		"block_updates.InstantNeighborUpdaterMixin",
+		"block_updates.WorldMixin",
+		"misc.SystemDetailsMixin",
+		"misc.DataFixerBuilderMixin",
+		"blocks.floating.ComparatorBlockMixin",
+		"blocks.floating.RedstoneWireBlockMixin",
+		"blocks.floating.RepeaterBlockMixin",
+		"blocks.FullBlockCollisionsMixin$PowderSnowBlockMixin",
+		"blocks.FullBlockCollisionsMixin$NetherPortalBlockMixin",
+		"blocks.FullBlockCollisionsMixin$EndPortalBlockMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

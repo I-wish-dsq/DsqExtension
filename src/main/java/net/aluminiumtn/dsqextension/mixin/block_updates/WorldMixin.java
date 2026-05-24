@@ -1,8 +1,11 @@
 package net.aluminiumtn.dsqextension.mixin.block_updates;
 
-import net.minecraft.world.World;
-import net.minecraft.world.block.NeighborUpdater;
-import net.minecraft.world.block.SimpleNeighborUpdater;
+import net.aluminiumtn.dsqextension.config.ConfigHandler;
+import net.aluminiumtn.dsqextension.util.SuppressionNeighborUpdater;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.redstone.InstantNeighborUpdater;
+import net.minecraft.world.level.redstone.CollectingNeighborUpdater;
+import net.minecraft.world.level.redstone.NeighborUpdater;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -10,9 +13,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.aluminiumtn.dsqextension.config.ConfigHandler;
 
-@Mixin(World.class)
+@Mixin(Level.class)
 public class WorldMixin {
 
     @Mutable
@@ -20,13 +22,15 @@ public class WorldMixin {
     @Final
     protected NeighborUpdater neighborUpdater;
 
-    //Just replaces the default neighbor updater with the simple one(for some reason Mojang left the pre 1.19 neighbor updater in the game)
     @Inject(method = "<init>", at = @At("TAIL"))
     private void dsqextension$bringBackStackOverflowSuppression(CallbackInfo ci) {
+        Level level = (Level) (Object) this;
+
         if (ConfigHandler.isReIntroduceInstantBlockUpdatesEnabled()) {
-            this.neighborUpdater = new SimpleNeighborUpdater((World) (Object) this);
+            this.neighborUpdater = new SuppressionNeighborUpdater(level);
+
+        } else {
+            this.neighborUpdater = new CollectingNeighborUpdater(level, 1000000);
         }
     }
-
-
-} 
+}
