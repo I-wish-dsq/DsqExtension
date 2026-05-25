@@ -21,7 +21,8 @@
 		"blocks.floating.RepeaterBlockMixin",
 		"blocks.FullBlockCollisionsMixin$PowderSnowBlockMixin",
 		"blocks.FullBlockCollisionsMixin$NetherPortalBlockMixin",
-		"blocks.FullBlockCollisionsMixin$EndPortalBlockMixin"
+		"blocks.FullBlockCollisionsMixin$EndPortalBlockMixin",
+		"LevelLightEngineMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

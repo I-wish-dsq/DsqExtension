@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.aluminiumtn.dsqextension.config.ConfigHandler;
+import net.aluminiumtn.dsqextension.util.LightUpdatesTracker;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -14,6 +15,8 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.function.BooleanSupplier;
 
@@ -48,5 +51,15 @@ public abstract class MinecraftServerMixin {
         } else {
             original.call(shouldKeepTicking);
         }
+    }
+
+    @Inject(
+            method = "tickServer",
+            at = @At("HEAD")
+    )
+    private void dsqextension$resetLightCounter(
+            CallbackInfo ci
+    ) {
+        LightUpdatesTracker.simulateLightEngineWork117();
     }
 }

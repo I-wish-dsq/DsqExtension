@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
@@ -16,6 +17,9 @@ import net.aluminiumtn.dsqextension.functions.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static net.aluminiumtn.dsqextension.util.LightUpdatesTracker.getLightEngineQueue;
+import static net.aluminiumtn.dsqextension.util.LightUpdatesTracker.MAX_LIGHT_UPDATES_PER_TICK;
 
 public class DsqExtension implements ModInitializer {
 
@@ -147,6 +151,24 @@ public class DsqExtension implements ModInitializer {
                                     return 1;
                                 })
                         )
+                )
+                .then(Commands.literal("reIntroduceLightSuppression")
+                        .then(Commands.argument("enabled", BoolArgumentType.bool())
+                                .executes(context -> {
+                                    boolean enabled = BoolArgumentType.getBool(context, "enabled");
+                                    ConfigHandler.setReIntroduceLightSuppressionEnabled(enabled);
+                                    context.getSource().sendSuccess(() -> Component.literal("Light Suppression set to " + enabled), true);
+                                    return 1;
+                                })
+                        )
+                )
+                .then(Commands.literal("getLightEngineQueue")
+                        .executes(context -> {
+                            int queue = getLightEngineQueue();
+                            ChatFormatting COLOR = (queue > MAX_LIGHT_UPDATES_PER_TICK) ? ChatFormatting.RED : ChatFormatting.GREEN;
+                            context.getSource().sendSuccess(() -> Component.literal("Light engine queue: " + queue).withStyle(style -> style.withColor(COLOR)), true);
+                            return 1;
+                        })
                 )
         );
     }

@@ -1,6 +1,5 @@
 package net.aluminiumtn.dsqextension.config;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
@@ -42,6 +41,7 @@ public class ConfigHandler {
     private static boolean bringBackGracefulOOMHandling = true;
     private static boolean cceSuppressorChatMessageEnabled = false;
     private static boolean reIntroduceInstantBlockUpdatesEnabled = false;
+    private static boolean reIntroduceLightSuppression = false;
 
     static {
         loadConfig();
@@ -71,6 +71,7 @@ public class ConfigHandler {
             reIntroduceInstantBlockUpdatesEnabled = Boolean.parseBoolean(properties.getProperty("reIntroduceInstantBlockUpdates", "false"));
             cceSuppressorChatMessageEnabled = Boolean.parseBoolean(properties.getProperty("cceSuppressorChatMessageEnabled", "false"));
             disableDeleteLightDataFixerEnabled = Boolean.parseBoolean(properties.getProperty("disableDeleteLightDataFixer", "false"));
+            reIntroduceLightSuppression = Boolean.parseBoolean(properties.getProperty("reIntroduceLightSuppression", "false"));
 
             // AntiShadowPatch options
             bringBackSOSuppression = Boolean.parseBoolean(properties.getProperty("bringBackSOSuppression", "true"));
@@ -137,6 +138,7 @@ public class ConfigHandler {
             properties.setProperty("bringBackVoidlessVoidTrading", Boolean.toString(bringBackVoidlessVoidTrading));
             properties.setProperty("bringBackGracefulSOHandling", Boolean.toString(bringBackGracefulSOHandling));
             properties.setProperty("bringBackGracefulOOMHandling", Boolean.toString(bringBackGracefulOOMHandling));
+            properties.setProperty("reIntroduceLightSuppression", Boolean.toString(bringBackGracefulOOMHandling));
 
             try (Writer writer = Files.newBufferedWriter(CONFIG_FILE)) {
                 properties.store(writer, "DSQ Extension Config");
@@ -216,6 +218,15 @@ public class ConfigHandler {
 
     public static void setDisableDeleteLightDataFixerEnabled(boolean enabled) {
         disableDeleteLightDataFixerEnabled = enabled;
+        saveConfig();
+    }
+
+    public static boolean isReIntroduceLightSuppressionEnabled() {
+        return reIntroduceLightSuppression;
+    }
+
+    public static void setReIntroduceLightSuppressionEnabled(boolean enabled) {
+        reIntroduceLightSuppression = enabled;
         saveConfig();
     }
 

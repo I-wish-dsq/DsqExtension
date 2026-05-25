@@ -20,17 +20,19 @@ public class WorldMixin {
     @Mutable
     @Shadow
     @Final
-    protected NeighborUpdater neighborUpdater;
+    protected CollectingNeighborUpdater neighborUpdater;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void dsqextension$bringBackStackOverflowSuppression(CallbackInfo ci) {
-        Level level = (Level) (Object) this;
-
-        if (ConfigHandler.isReIntroduceInstantBlockUpdatesEnabled()) {
-            this.neighborUpdater = new SuppressionNeighborUpdater(level);
-
-        } else {
-            this.neighborUpdater = new CollectingNeighborUpdater(level, 1000000);
+    private void dsqextension$replaceNeighborUpdater(
+            CallbackInfo ci
+    ) {
+        if (!ConfigHandler.isReIntroduceInstantBlockUpdatesEnabled()) {
+            return;
         }
+
+        Level level = (Level)(Object)this;
+
+        this.neighborUpdater =
+                new SuppressionNeighborUpdater(level);
     }
 }
