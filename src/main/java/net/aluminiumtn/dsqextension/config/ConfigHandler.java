@@ -14,28 +14,28 @@ public class ConfigHandler {
 
     private static final Path CONFIG_FILE = Paths.get("config", "dsqextension.conf");
 
-    @Rule(desc = "При зажатом shift, предметы попадают сразу в инвентарь")
+    @Rule(desc = "Items go directly into the inventory while sneaking")
     private static boolean sneakingItemsEnabled = false;
 
-    @Rule(desc = "Возвращение мехиники рейдов 1.14")
+    @Rule(desc = "Reintroduces 1.14 raid mechanics")
     private static boolean reIntroduceOldRaidsEnabled = false;
 
-    @Rule(desc = "Возвращение Void trade")
+    @Rule(desc = "Reintroduces Void trade")
     private static boolean returnVoidTradeEnabled = false;
 
-    @Rule(desc = "Возвращение опыта с свинозомби (смерть не от рук игрока)")
+    @Rule(desc = "Reintroduces experience from zombie pigmen (death not caused by player)")
     private static boolean returnExpFromPigmansEnabled = false;
 
-    @Rule(desc = "Отключение ии мобам при ударе лопатой")
+    @Rule(desc = "Disables mob AI when hit with a shovel")
     private static boolean AIDisableShovelEnabled = false;
 
-    @Rule(desc = "Отключение пересчета света в чанках")
+    @Rule(desc = "Disables chunk light recalculation")
     private static boolean disableDeleteLightDataFixerEnabled = false;
 
-    @Rule(desc = "Отключение очереди обновления блоков")
+    @Rule(desc = "Disables block update queue")
     private static boolean reIntroduceInstantBlockUpdatesEnabled = false;
 
-    @Rule(desc = "Симулирование очереди движка света")
+    @Rule(desc = "Simulates the light engine queue")
     private static boolean reIntroduceLightSuppression = false;
 
 
@@ -45,67 +45,67 @@ public class ConfigHandler {
 
 
 
-    @Rule(desc = "Возвращает StackOverflow Suppression")
+    @Rule(desc = "Reintroduces StackOverflow Suppression")
     private static boolean bringBackSOSuppression = true;
 
-    @Rule(desc = "Возвращает CCE Suppression")
+    @Rule(desc = "Reintroduces CCE Suppression")
     private static boolean bringBackCCESuppression = true;
 
-    @Rule(desc = "Возвращает пропуск обновлений люков")
+    @Rule(desc = "Reintroduces trapdoor update skipping")
     private static boolean bringBackTrapdoorUpdateSkipping = true;
 
-    @Rule(desc = "Возвращает парящие редстоун-компоненты на люках")
+    @Rule(desc = "Reintroduces floating redstone components on trapdoors")
     private static boolean bringBackFloatingRedstoneComponentsOnTopOfTrapdoor = true;
 
-    @Rule(desc = "Возвращает дюп опыта в печках")
+    @Rule(desc = "Reintroduces furnace XP duplication")
     private static boolean bringBackFurnaceXPDupe = true;
 
-    @Rule(desc = "Возвращает внутренние коллизии полных блоков")
+    @Rule(desc = "Reintroduces inner collisions for full blocks")
     private static boolean bringBackFullBlockInnerCollisions = false;
 
-    @Rule(desc = "Возвращает замену Block Entity (Block Entity Swap)")
+    @Rule(desc = "Reintroduces Block Entity Swap")
     private static boolean bringBackBlockEntitySwap = true;
 
-    @Rule(desc = "Сохранять блоки с замененными Block Entities")
+    @Rule(desc = "Keeps blocks with swapped Block Entities")
     private static boolean keepBlocksWithSwappedBlockEntities = true;
 
-    @Rule(desc = "Возвращает теневые предметы (Item Shadowing) как в 1.17")
+    @Rule(desc = "Reintroduces item shadowing from 1.17")
     private static boolean bringBackItemShadowing_1_17 = true;
 
-    @Rule(desc = "Возвращает теневые предметы (Item Shadowing) как в 1.18")
+    @Rule(desc = "Reintroduces item shadowing from 1.18")
     private static boolean bringBackItemShadowing_1_18 = true;
 
-    @Rule(desc = "Возвращает переполнение стаков книг проклятий")
+    @Rule(desc = "Reintroduces curse book overstacking")
     private static boolean bringBackCurseBookOverstacking = false;
 
-    @Rule(desc = "Возвращает движение переполненных стаков как в 1.20")
+    @Rule(desc = "Reintroduces overstacked item movement from 1.20")
     private static boolean bringBackOverstackedItemMovement_1_20 = false;
 
-    @Rule(desc = "Возвращает состояние сохранения чанков как в 1.14")
+    @Rule(desc = "Reintroduces chunk save state from 1.14")
     private static boolean bringBackChunkSaveState_1_14 = false;
 
-    @Rule(desc = "Возвращает состояние сохранения чанков как в 1.21")
+    @Rule(desc = "Reintroduces chunk save state from 1.21")
     private static boolean bringBackChunkSaveState_1_21 = false;
 
-    @Rule(desc = "Возвращает старую заморозку дракона")
+    @Rule(desc = "Reintroduces old dragon freezing")
     private static boolean bringBackOldDragonFreezing = true;
 
-    @Rule(desc = "Возвращает неуязвимость стоек для брони к урону визера")
+    @Rule(desc = "Reintroduces armor stand immunity to wither damage")
     private static boolean bringBackArmorStandInvulnerableToWitherDamage = true;
 
-    @Rule(desc = "Возвращает теневые предметы в инвентарях мобов")
+    @Rule(desc = "Reintroduces shadow items in mob inventories")
     private static boolean bringBackShadowItemsInMobInventory = true;
 
-    @Rule(desc = "Возвращает торговлю в пустоте (без пустоты)")
+    @Rule(desc = "Reintroduces voidless void trading")
     private static boolean bringBackVoidlessVoidTrading = true;
 
-    @Rule(desc = "Возвращает корректную обработку SO (StackOverflow)")
+    @Rule(desc = "Reintroduces graceful StackOverflow handling")
     private static boolean bringBackGracefulSOHandling = true;
 
-    @Rule(desc = "Возвращает корректную обработку OOM (Out Of Memory)")
+    @Rule(desc = "Reintroduces graceful Out Of Memory handling")
     private static boolean bringBackGracefulOOMHandling = true;
 
-    @Rule(desc = "Bloked masage")
+    @Rule(desc = "Blocked message")
     private static boolean cceSuppressorChatMessageEnabled = true;
 
     static {

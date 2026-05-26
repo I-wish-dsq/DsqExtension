@@ -8,11 +8,7 @@ import net.aluminiumtn.dsqextension.util.Rule;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.MutableComponent;
-import org.objectweb.asm.tree.analysis.Value;
+import net.minecraft.network.chat.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -69,38 +65,11 @@ public class ConfigCommand {
 
         MutableComponent optionsText = Component.literal("Suggested options: ").withStyle(ChatFormatting.GRAY);
 
-        if (currentValue) {
-            optionsText.append(Component.literal("[false]").withStyle(ChatFormatting.DARK_GRAY)
-                    .withStyle(style -> style
-                            .withClickEvent(new ClickEvent.SuggestCommand("/dsqextension " + field.getName() + " false"))
-                            .withHoverEvent(new HoverEvent.ShowText(Component.literal("Изменить на false").withStyle(ChatFormatting.GRAY)))
-                    ));
+        optionsText.append(createToggleButton("[false]", currentValue ? ChatFormatting.DARK_GRAY : ChatFormatting.RED, !currentValue, "/dsqextension " + field.getName() + " false", "Изменить на false"));
 
-            optionsText.append(Component.literal(" "));
+        optionsText.append(Component.literal(" "));
 
-            // Кнопка [true]
-            optionsText.append(Component.literal("[true]").withStyle(ChatFormatting.GREEN, ChatFormatting.UNDERLINE)
-                    .withStyle(style -> style
-                            .withClickEvent(new ClickEvent.SuggestCommand("/dsqextension " + field.getName() + " true"))
-                            .withHoverEvent(new HoverEvent.ShowText(Component.literal("Изменить на true").withStyle(ChatFormatting.GRAY)))
-                    ));
-        }
-        else {
-            optionsText.append(Component.literal("[false]").withStyle(ChatFormatting.RED, ChatFormatting.UNDERLINE)
-                    .withStyle(style -> style
-                            .withClickEvent(new ClickEvent.SuggestCommand("/dsqextension " + field.getName() + " false"))
-                            .withHoverEvent(new HoverEvent.ShowText(Component.literal("Изменить на false").withStyle(ChatFormatting.GRAY)))
-                    ));
-
-            optionsText.append(Component.literal(" "));
-
-            // Кнопка [true]
-            optionsText.append(Component.literal("[true]").withStyle(ChatFormatting.DARK_GRAY)
-                    .withStyle(style -> style
-                            .withClickEvent(new ClickEvent.SuggestCommand("/dsqextension " + field.getName() + " true"))
-                            .withHoverEvent(new HoverEvent.ShowText(Component.literal("Изменить на true").withStyle(ChatFormatting.GRAY)))
-                    ));
-        }
+        optionsText.append(createToggleButton("[true]", currentValue ? ChatFormatting.GREEN : ChatFormatting.DARK_GRAY, currentValue, "/dsqextension " + field.getName() + " true", "Изменить на true"));
 
 
         source.sendSystemMessage(optionsText);
@@ -140,5 +109,9 @@ public class ConfigCommand {
             }
         }
         return fields;
+    }
+
+    private static Component createToggleButton(String text, ChatFormatting color, boolean underline, String command, String hoverText) {
+        return Component.literal(text).setStyle(Style.EMPTY.withColor(color).withUnderlined(underline).withClickEvent(new ClickEvent.SuggestCommand(command)).withHoverEvent(new HoverEvent.ShowText(Component.literal(hoverText).withStyle(ChatFormatting.GRAY))));
     }
 }

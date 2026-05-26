@@ -32,7 +32,6 @@ public class WorldMixin {
 
         Level level = (Level)(Object)this;
 
-        this.neighborUpdater =
-                new SuppressionNeighborUpdater(level);
+        this.neighborUpdater = new SuppressionNeighborUpdater(level);
     }
 }
