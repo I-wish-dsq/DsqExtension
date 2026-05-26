@@ -1,7 +1,10 @@
 package net.aluminiumtn.dsqextension.config;
 
+import net.aluminiumtn.dsqextension.util.Rule;
+
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,37 +14,99 @@ public class ConfigHandler {
 
     private static final Path CONFIG_FILE = Paths.get("config", "dsqextension.conf");
 
+    @Rule(desc = "При зажатом shift, предметы попадают сразу в инвентарь")
     private static boolean sneakingItemsEnabled = false;
+
+    @Rule(desc = "Возвращение мехиники рейдов 1.14")
     private static boolean reIntroduceOldRaidsEnabled = false;
+
+    @Rule(desc = "Возвращение Void trade")
     private static boolean returnVoidTradeEnabled = false;
+
+    @Rule(desc = "Возвращение опыта с свинозомби (смерть не от рук игрока)")
     private static boolean returnExpFromPigmansEnabled = false;
+
+    @Rule(desc = "Отключение ии мобам при ударе лопатой")
     private static boolean AIDisableShovelEnabled = false;
+
+    @Rule(desc = "Отключение пересчета света в чанках")
     private static boolean disableDeleteLightDataFixerEnabled = false;
 
-    // AntiShadowPatch options
-    private static boolean bringBackSOSuppression = true;
-    private static boolean bringBackCCESuppression = true;
-    private static boolean bringBackTrapdoorUpdateSkipping = true;
-    private static boolean bringBackFloatingRedstoneComponentsOnTopOfTrapdoor = true;
-    private static boolean bringBackFurnaceXPDupe = true;
-    private static boolean bringBackFullBlockInnerCollisions = false;
-    private static boolean bringBackBlockEntitySwap = true;
-    private static boolean keepBlocksWithSwappedBlockEntities = true;
-    private static boolean bringBackItemShadowing_1_17 = true;
-    private static boolean bringBackItemShadowing_1_18 = true;
-    private static boolean bringBackCurseBookOverstacking = false;
-    private static boolean bringBackOverstackedItemMovement_1_20 = false;
-    private static boolean bringBackChunkSaveState_1_14 = false;
-    private static boolean bringBackChunkSaveState_1_21 = false;
-    private static boolean bringBackOldDragonFreezing = true;
-    private static boolean bringBackArmorStandInvulnerableToWitherDamage = true;
-    private static boolean bringBackShadowItemsInMobInventory = true;
-    private static boolean bringBackVoidlessVoidTrading = true;
-    private static boolean bringBackGracefulSOHandling = true;
-    private static boolean bringBackGracefulOOMHandling = true;
-    private static boolean cceSuppressorChatMessageEnabled = false;
+    @Rule(desc = "Отключение очереди обновления блоков")
     private static boolean reIntroduceInstantBlockUpdatesEnabled = false;
+
+    @Rule(desc = "Симулирование очереди движка света")
     private static boolean reIntroduceLightSuppression = false;
+
+
+
+    // AntiShadowPatch options
+    // Тут описания написаны нейронкой
+
+
+
+    @Rule(desc = "Возвращает StackOverflow Suppression")
+    private static boolean bringBackSOSuppression = true;
+
+    @Rule(desc = "Возвращает CCE Suppression")
+    private static boolean bringBackCCESuppression = true;
+
+    @Rule(desc = "Возвращает пропуск обновлений люков")
+    private static boolean bringBackTrapdoorUpdateSkipping = true;
+
+    @Rule(desc = "Возвращает парящие редстоун-компоненты на люках")
+    private static boolean bringBackFloatingRedstoneComponentsOnTopOfTrapdoor = true;
+
+    @Rule(desc = "Возвращает дюп опыта в печках")
+    private static boolean bringBackFurnaceXPDupe = true;
+
+    @Rule(desc = "Возвращает внутренние коллизии полных блоков")
+    private static boolean bringBackFullBlockInnerCollisions = false;
+
+    @Rule(desc = "Возвращает замену Block Entity (Block Entity Swap)")
+    private static boolean bringBackBlockEntitySwap = true;
+
+    @Rule(desc = "Сохранять блоки с замененными Block Entities")
+    private static boolean keepBlocksWithSwappedBlockEntities = true;
+
+    @Rule(desc = "Возвращает теневые предметы (Item Shadowing) как в 1.17")
+    private static boolean bringBackItemShadowing_1_17 = true;
+
+    @Rule(desc = "Возвращает теневые предметы (Item Shadowing) как в 1.18")
+    private static boolean bringBackItemShadowing_1_18 = true;
+
+    @Rule(desc = "Возвращает переполнение стаков книг проклятий")
+    private static boolean bringBackCurseBookOverstacking = false;
+
+    @Rule(desc = "Возвращает движение переполненных стаков как в 1.20")
+    private static boolean bringBackOverstackedItemMovement_1_20 = false;
+
+    @Rule(desc = "Возвращает состояние сохранения чанков как в 1.14")
+    private static boolean bringBackChunkSaveState_1_14 = false;
+
+    @Rule(desc = "Возвращает состояние сохранения чанков как в 1.21")
+    private static boolean bringBackChunkSaveState_1_21 = false;
+
+    @Rule(desc = "Возвращает старую заморозку дракона")
+    private static boolean bringBackOldDragonFreezing = true;
+
+    @Rule(desc = "Возвращает неуязвимость стоек для брони к урону визера")
+    private static boolean bringBackArmorStandInvulnerableToWitherDamage = true;
+
+    @Rule(desc = "Возвращает теневые предметы в инвентарях мобов")
+    private static boolean bringBackShadowItemsInMobInventory = true;
+
+    @Rule(desc = "Возвращает торговлю в пустоте (без пустоты)")
+    private static boolean bringBackVoidlessVoidTrading = true;
+
+    @Rule(desc = "Возвращает корректную обработку SO (StackOverflow)")
+    private static boolean bringBackGracefulSOHandling = true;
+
+    @Rule(desc = "Возвращает корректную обработку OOM (Out Of Memory)")
+    private static boolean bringBackGracefulOOMHandling = true;
+
+    @Rule(desc = "Bloked masage")
+    private static boolean cceSuppressorChatMessageEnabled = true;
 
     static {
         loadConfig();
@@ -138,7 +203,7 @@ public class ConfigHandler {
             properties.setProperty("bringBackVoidlessVoidTrading", Boolean.toString(bringBackVoidlessVoidTrading));
             properties.setProperty("bringBackGracefulSOHandling", Boolean.toString(bringBackGracefulSOHandling));
             properties.setProperty("bringBackGracefulOOMHandling", Boolean.toString(bringBackGracefulOOMHandling));
-            properties.setProperty("reIntroduceLightSuppression", Boolean.toString(bringBackGracefulOOMHandling));
+            properties.setProperty("reIntroduceLightSuppression", Boolean.toString(reIntroduceLightSuppression));
 
             try (Writer writer = Files.newBufferedWriter(CONFIG_FILE)) {
                 properties.store(writer, "DSQ Extension Config");
