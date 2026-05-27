@@ -12,7 +12,9 @@ import net.minecraft.network.chat.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static net.aluminiumtn.dsqextension.DsqExtension.MOD_DESC;
 
@@ -41,6 +43,7 @@ public class ConfigCommand {
     private static int displayRuleInfo(CommandSourceStack source, Field field) {
         Rule rule = field.getAnnotation(Rule.class);
         String desc = rule != null ? rule.desc() : "Описание отсутствует";
+        String tags = rule != null ? Arrays.stream(rule.tags()).map(Enum::name).collect(Collectors.joining(", ")) : "none";
         boolean defaultValue = rule != null && rule.defaultValue();
 
         boolean currentValue = false;
@@ -62,6 +65,9 @@ public class ConfigCommand {
 
         source.sendSystemMessage(Component.literal("Default value: ").withStyle(ChatFormatting.GRAY)
                 .append(Component.literal(String.valueOf(defaultValue)).withStyle(ChatFormatting.AQUA)));
+
+        source.sendSystemMessage(Component.literal("Tags: ").withStyle(ChatFormatting.GRAY)
+                .append(Component.literal(tags).withStyle(ChatFormatting.DARK_PURPLE)));
 
         MutableComponent optionsText = Component.literal("Suggested options: ").withStyle(ChatFormatting.GRAY);
 

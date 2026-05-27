@@ -1,5 +1,6 @@
 package net.aluminiumtn.dsqextension.config;
 
+import net.aluminiumtn.dsqextension.enums.RuleTags;
 import net.aluminiumtn.dsqextension.util.Rule;
 
 import java.io.Reader;
@@ -14,29 +15,96 @@ public class ConfigHandler {
 
     private static final Path CONFIG_FILE = Paths.get("config", "dsqextension.conf");
 
-    @Rule(desc = "Items go directly into the inventory while sneaking")
+    @Rule(
+            desc = "Items go directly into the inventory while sneaking",
+            tags = {
+                    RuleTags.QOL,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.SURVIVAL
+            }
+    )
     private static boolean sneakingItemsEnabled = false;
 
-    @Rule(desc = "Reintroduces 1.14 raid mechanics")
+    @Rule(
+            desc = "Reintroduces 1.14 raid mechanics",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.SURVIVAL
+            }
+    )
     private static boolean reIntroduceOldRaidsEnabled = false;
 
-    @Rule(desc = "Reintroduces Void trade")
+    @Rule(
+            desc = "Reintroduces Void trade",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.SURVIVAL,
+                    RuleTags.EXPERIMENTAL
+            }
+    )
     private static boolean returnVoidTradeEnabled = false;
 
-    @Rule(desc = "Reintroduces experience from zombie pigmen (death not caused by player)")
+    @Rule(
+            desc = "Reintroduces experience from zombie pigmen (death not caused by player)",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.SURVIVAL
+            }
+    )
     private static boolean returnExpFromPigmansEnabled = false;
 
-    @Rule(desc = "Disables mob AI when hit with a shovel")
+    @Rule(
+            desc = "Disables mob AI when hit with a shovel",
+            tags = {
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.QOL,
+                    RuleTags.EXPERIMENTAL
+            }
+    )
     private static boolean AIDisableShovelEnabled = false;
 
-    @Rule(desc = "Disables chunk light recalculation")
+    @Rule(
+            desc = "Disables chunk light recalculation",
+            tags = {
+                    RuleTags.RISKY,
+                    RuleTags.EXPERIMENTAL,
+                    RuleTags.NOT_VANILLA
+            }
+    )
     private static boolean disableDeleteLightDataFixerEnabled = false;
 
-    @Rule(desc = "Disables block update queue")
+    @Rule(
+            desc = "Disables block update queue",
+            tags = {
+                    RuleTags.RISKY,
+                    RuleTags.EXPERIMENTAL,
+                    RuleTags.NOT_VANILLA
+            }
+    )
     private static boolean reIntroduceInstantBlockUpdatesEnabled = false;
 
-    @Rule(desc = "Simulates the light engine queue")
-    private static boolean reIntroduceLightSuppression = false;
+    @Rule(
+            desc = "Simulates the light engine queue",
+            tags = {
+                    RuleTags.RISKY,
+                    RuleTags.EXPERIMENTAL,
+                    RuleTags.NOT_VANILLA
+            }
+    )
+    private static boolean reIntroduceLightSuppressionEnabled = false;
+
+    @Rule(
+            desc = "Hand refill from shulker in your inventory",
+            tags = {
+                    RuleTags.QOL,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.SURVIVAL
+            }
+    )
+    private static boolean shulkerRefillEnabled = false;
 
 
 
@@ -136,7 +204,8 @@ public class ConfigHandler {
             reIntroduceInstantBlockUpdatesEnabled = Boolean.parseBoolean(properties.getProperty("reIntroduceInstantBlockUpdates", "false"));
             cceSuppressorChatMessageEnabled = Boolean.parseBoolean(properties.getProperty("cceSuppressorChatMessageEnabled", "false"));
             disableDeleteLightDataFixerEnabled = Boolean.parseBoolean(properties.getProperty("disableDeleteLightDataFixer", "false"));
-            reIntroduceLightSuppression = Boolean.parseBoolean(properties.getProperty("reIntroduceLightSuppression", "false"));
+            reIntroduceLightSuppressionEnabled = Boolean.parseBoolean(properties.getProperty("reIntroduceLightSuppression", "false"));
+            shulkerRefillEnabled = Boolean.parseBoolean(properties.getProperty("shulkerRefill", "false"));
 
             // AntiShadowPatch options
             bringBackSOSuppression = Boolean.parseBoolean(properties.getProperty("bringBackSOSuppression", "true"));
@@ -181,6 +250,7 @@ public class ConfigHandler {
             properties.setProperty("reIntroduceInstantBlockUpdates", Boolean.toString(reIntroduceInstantBlockUpdatesEnabled));
             properties.setProperty("cceSuppressorChatMessageEnabled", Boolean.toString(cceSuppressorChatMessageEnabled));
             properties.setProperty("disableDeleteLightDataFixer", Boolean.toString(disableDeleteLightDataFixerEnabled));
+            properties.setProperty("shulkerRefill", Boolean.toString(shulkerRefillEnabled));
 
             // AntiShadowPatch options
             properties.setProperty("bringBackSOSuppression", Boolean.toString(bringBackSOSuppression));
@@ -203,7 +273,7 @@ public class ConfigHandler {
             properties.setProperty("bringBackVoidlessVoidTrading", Boolean.toString(bringBackVoidlessVoidTrading));
             properties.setProperty("bringBackGracefulSOHandling", Boolean.toString(bringBackGracefulSOHandling));
             properties.setProperty("bringBackGracefulOOMHandling", Boolean.toString(bringBackGracefulOOMHandling));
-            properties.setProperty("reIntroduceLightSuppression", Boolean.toString(reIntroduceLightSuppression));
+            properties.setProperty("reIntroduceLightSuppression", Boolean.toString(reIntroduceLightSuppressionEnabled));
 
             try (Writer writer = Files.newBufferedWriter(CONFIG_FILE)) {
                 properties.store(writer, "DSQ Extension Config");
@@ -287,15 +357,25 @@ public class ConfigHandler {
     }
 
     public static boolean isReIntroduceLightSuppressionEnabled() {
-        return reIntroduceLightSuppression;
+        return reIntroduceLightSuppressionEnabled;
     }
 
     public static void setReIntroduceLightSuppressionEnabled(boolean enabled) {
-        reIntroduceLightSuppression = enabled;
+        reIntroduceLightSuppressionEnabled = enabled;
+        saveConfig();
+    }
+
+    public static boolean isShulkerRefillEnabled() {
+        return shulkerRefillEnabled;
+    }
+
+    public static void setShulkerRefillEnabled(boolean enabled) {
+        shulkerRefillEnabled = enabled;
         saveConfig();
     }
 
     // AntiShadowPatch Getters
+
     public static boolean isBringBackSOSuppressionEnabled() {
         return bringBackSOSuppression;
     }

@@ -22,7 +22,8 @@
 		"blocks.FullBlockCollisionsMixin$PowderSnowBlockMixin",
 		"blocks.FullBlockCollisionsMixin$NetherPortalBlockMixin",
 		"blocks.FullBlockCollisionsMixin$EndPortalBlockMixin",
-		"LevelLightEngineMixin"
+		"LevelLightEngineMixin",
+		"BlockItemMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
