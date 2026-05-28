@@ -16,6 +16,7 @@ import net.aluminiumtn.dsqextension.functions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static net.aluminiumtn.dsqextension.mixin.accessors.EnityAccessor.getEntityCounter;
 import static net.aluminiumtn.dsqextension.util.LightUpdatesTracker.getLightEngineQueue;
 import static net.aluminiumtn.dsqextension.util.LightUpdatesTracker.MAX_LIGHT_UPDATES_PER_TICK;
 
@@ -64,6 +65,13 @@ public class DsqExtension implements ModInitializer {
                             context.getSource().sendSystemMessage(
                                     Component.literal("Light engine queue: " + queue).withStyle(COLOR)
                             );
+                            return 1;
+                        })
+                )
+
+                .then(Commands.literal("getEntityID")
+                        .executes(context -> {
+                            context.getSource().sendSystemMessage(Component.literal("Current entity id: " + getEntityCounter()));
                             return 1;
                         })
                 )

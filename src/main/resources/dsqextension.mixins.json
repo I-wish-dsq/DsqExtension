@@ -23,7 +23,8 @@
 		"blocks.FullBlockCollisionsMixin$NetherPortalBlockMixin",
 		"blocks.FullBlockCollisionsMixin$EndPortalBlockMixin",
 		"LevelLightEngineMixin",
-		"BlockItemMixin"
+		"BlockItemMixin",
+		"accessors.EnityAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1
