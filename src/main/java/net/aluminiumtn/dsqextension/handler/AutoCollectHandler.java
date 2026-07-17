@@ -13,6 +13,8 @@ import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.aluminiumtn.dsqextension.config.ConfigHandler;
 
+import java.util.Objects;
+
 public class AutoCollectHandler {
 
     public static void register() {
@@ -21,33 +23,35 @@ public class AutoCollectHandler {
 
     private static boolean onBlockBreak(Level level, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         if (!level.isClientSide() && ConfigHandler.isSneakingItemsEnabled()) {
-            if (player.isShiftKeyDown()) {
-                Block block = state.getBlock();
+            if (player.gameMode().isSurvival()) {
+                if (player.isShiftKeyDown()) {
+                    Block block = state.getBlock();
 
-                if (block instanceof ShulkerBoxBlock) {
-                    if (blockEntity instanceof ShulkerBoxBlockEntity) {
-                        var droppedStacks = Block.getDrops(state, (ServerLevel) level, pos, blockEntity, player, player.getMainHandItem());
+                    if (block instanceof ShulkerBoxBlock) {
+                        if (blockEntity instanceof ShulkerBoxBlockEntity) {
+                            var droppedStacks = Block.getDrops(state, (ServerLevel) level, pos, blockEntity, player, player.getMainHandItem());
 
-                        if (!droppedStacks.isEmpty()) {
-                            ItemStack shulkerStack = droppedStacks.get(0);
+                            if (!droppedStacks.isEmpty()) {
+                                ItemStack shulkerStack = droppedStacks.get(0);
 
-                            if (!player.getInventory().add(shulkerStack)) {
-                                player.drop(shulkerStack, false);
+                                if (!player.getInventory().add(shulkerStack)) {
+                                    player.drop(shulkerStack, false);
+                                }
+
+                                level.setBlock(pos, state.getFluidState().createLegacyBlock(), 3);
+                                return false;
                             }
-
-                            level.setBlock(pos, state.getFluidState().createLegacyBlock(), 3);
-                            return false;
                         }
                     }
-                }
 
-                ItemStack stack = new ItemStack(block.asItem());
-                if (!stack.isEmpty()) {
-                    if (!player.getInventory().add(stack)) {
-                        player.drop(stack, false);
+                    ItemStack stack = new ItemStack(block.asItem());
+                    if (!stack.isEmpty()) {
+                        if (!player.getInventory().add(stack)) {
+                            player.drop(stack, false);
+                        }
+                        level.setBlock(pos, state.getFluidState().createLegacyBlock(), 3);
+                        return false;
                     }
-                    level.setBlock(pos, state.getFluidState().createLegacyBlock(), 3);
-                    return false;
                 }
             }
         }

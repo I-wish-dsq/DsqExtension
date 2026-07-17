@@ -75,6 +75,13 @@ public class DsqExtension implements ModInitializer {
                             return 1;
                         })
                 )
+
+                .then(Commands.literal("getConfigPath")
+                        .executes(context -> {
+                            context.getSource().sendSystemMessage(Component.literal("Current config file path is: " + ConfigHandler.CONFIG_FILE));
+                            return 1;
+                        })
+                )
         );
     }
 
@@ -89,7 +96,6 @@ public class DsqExtension implements ModInitializer {
                     oldRaidsHandlerRegistered = false;
                 }
                 break;
-
             case "returnExpFromPigmansEnabled":
                 if (newValue) ZombiePigmanAggro.register();
                 else ZombiePigmanAggro.unregister();
