@@ -2,19 +2,40 @@ package net.aluminiumtn.dsqextension.config;
 
 import net.aluminiumtn.dsqextension.enums.RuleTags;
 import net.aluminiumtn.dsqextension.util.Rule;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.storage.LevelResource;
 
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 
 public class ConfigHandler {
 
-    private static final Path CONFIG_FILE = Paths.get("config", "dsqextension.conf");
+    private static Path CONFIG_FILE;
+
+    public static void init(MinecraftServer server) {
+        Path worldPath = server.getWorldPath(LevelResource.ROOT);
+
+        CONFIG_FILE = worldPath.resolve("data").resolve("dsqextension.conf");
+
+        loadConfig();
+    }
 
     @Rule(
+            key = "removeRaidOmenFromAdvancements",
+            desc = "Removes raid omen from advancement. RESTART SERVER TO APPLY",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA
+            }
+    )
+    private static boolean removeRaidOmenFromAdvancementsEnabled = true;
+
+    @Rule(
+            key = "sneakingItems",
             desc = "Items go directly into the inventory while sneaking",
             tags = {
                     RuleTags.QOL,
@@ -25,6 +46,7 @@ public class ConfigHandler {
     private static boolean sneakingItemsEnabled = false;
 
     @Rule(
+            key = "reIntroduceOldRaids",
             desc = "Reintroduces 1.14 raid mechanics",
             tags = {
                     RuleTags.REINTRODUCE,
@@ -35,6 +57,7 @@ public class ConfigHandler {
     private static boolean reIntroduceOldRaidsEnabled = false;
 
     @Rule(
+            key = "reIntroduceVoidTrading",
             desc = "Reintroduces Void trade",
             tags = {
                     RuleTags.REINTRODUCE,
@@ -46,6 +69,7 @@ public class ConfigHandler {
     private static boolean returnVoidTradeEnabled = false;
 
     @Rule(
+            key = "returnExpFromPigmans",
             desc = "Reintroduces experience from zombie pigmen (death not caused by player)",
             tags = {
                     RuleTags.REINTRODUCE,
@@ -56,6 +80,7 @@ public class ConfigHandler {
     private static boolean returnExpFromPigmansEnabled = false;
 
     @Rule(
+            key = "aiDisableShovel",
             desc = "Disables mob AI when hit with a shovel",
             tags = {
                     RuleTags.NOT_VANILLA,
@@ -63,9 +88,10 @@ public class ConfigHandler {
                     RuleTags.EXPERIMENTAL
             }
     )
-    private static boolean AIDisableShovelEnabled = false;
+    private static boolean aiDisableShovelEnabled = false;
 
     @Rule(
+            key = "disableDeleteLightDataFixer",
             desc = "Disables chunk light recalculation",
             tags = {
                     RuleTags.RISKY,
@@ -76,6 +102,7 @@ public class ConfigHandler {
     private static boolean disableDeleteLightDataFixerEnabled = false;
 
     @Rule(
+            key = "reIntroduceInstantBlockUpdates",
             desc = "Disables block update queue",
             tags = {
                     RuleTags.RISKY,
@@ -86,6 +113,7 @@ public class ConfigHandler {
     private static boolean reIntroduceInstantBlockUpdatesEnabled = false;
 
     @Rule(
+            key = "simulateLightEngineQueue",
             desc = "Simulates the light engine queue",
             tags = {
                     RuleTags.RISKY,
@@ -96,6 +124,7 @@ public class ConfigHandler {
     private static boolean reIntroduceLightSuppressionEnabled = false;
 
     @Rule(
+            key = "handRefillFromShulker",
             desc = "Hand refill from shulker in your inventory",
             tags = {
                     RuleTags.QOL,
@@ -105,82 +134,244 @@ public class ConfigHandler {
     )
     private static boolean shulkerRefillEnabled = false;
 
+    // я хуй знает че за правила ниже, оно было и пусть будет
 
+    @Rule(
+            key = "bringBackSOSuppression",
+            desc = "Reintroduces StackOverflow suppression",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.EXPERIMENTAL
+            }
+    )
+    private static boolean bringBackSOSuppressionEnabled = true;
 
-    // AntiShadowPatch options
-    // Тут описания написаны нейронкой
+    @Rule(
+            key = "bringBackCCESuppression",
+            desc = "Reintroduces ClassCastException suppression",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.EXPERIMENTAL
+            }
+    )
+    private static boolean bringBackCCESuppressionEnabled = true;
 
+    @Rule(
+            key = "bringBackTrapdoorUpdateSkipping",
+            desc = "Reintroduces trapdoor update skipping",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.EXPERIMENTAL
+            }
+    )
+    private static boolean bringBackTrapdoorUpdateSkippingEnabled = true;
 
+    @Rule(
+            key = "bringBackFloatingRedstoneComponentsOnTopOfTrapdoor",
+            desc = "Reintroduces floating redstone components on top of trapdoors",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.EXPERIMENTAL
+            }
+    )
+    private static boolean bringBackFloatingRedstoneComponentsOnTopOfTrapdoorEnabled = true;
 
-    @Rule(desc = "Reintroduces StackOverflow Suppression")
-    private static boolean bringBackSOSuppression = true;
+    @Rule(
+            key = "bringBackFurnaceXPDupe",
+            desc = "Reintroduces furnace experience duplication",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.RISKY
+            }
+    )
+    private static boolean bringBackFurnaceXPDupeEnabled = true;
 
-    @Rule(desc = "Reintroduces CCE Suppression")
-    private static boolean bringBackCCESuppression = true;
+    @Rule(
+            key = "bringBackFullBlockInnerCollisions",
+            desc = "Reintroduces inner collisions for full blocks",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.EXPERIMENTAL
+            }
+    )
+    private static boolean bringBackFullBlockInnerCollisionsEnabled = false;
 
-    @Rule(desc = "Reintroduces trapdoor update skipping")
-    private static boolean bringBackTrapdoorUpdateSkipping = true;
+    @Rule(
+            key = "bringBackBlockEntitySwap",
+            desc = "Reintroduces block entity swapping",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.RISKY
+            }
+    )
+    private static boolean bringBackBlockEntitySwapEnabled = true;
 
-    @Rule(desc = "Reintroduces floating redstone components on trapdoors")
-    private static boolean bringBackFloatingRedstoneComponentsOnTopOfTrapdoor = true;
+    @Rule(
+            key = "keepBlocksWithSwappedBlockEntities",
+            desc = "Keeps blocks with swapped block entities",
+            tags = {
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.RISKY,
+                    RuleTags.EXPERIMENTAL
+            }
+    )
+    private static boolean keepBlocksWithSwappedBlockEntitiesEnabled = true;
 
-    @Rule(desc = "Reintroduces furnace XP duplication")
-    private static boolean bringBackFurnaceXPDupe = true;
+    @Rule(
+            key = "bringBackItemShadowing_1_17",
+            desc = "Reintroduces item shadowing from 1.17",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.RISKY
+            }
+    )
+    private static boolean bringBackItemShadowing_1_17Enabled = true;
 
-    @Rule(desc = "Reintroduces inner collisions for full blocks")
-    private static boolean bringBackFullBlockInnerCollisions = false;
+    @Rule(
+            key = "bringBackItemShadowing_1_18",
+            desc = "Reintroduces item shadowing from 1.18",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.RISKY
+            }
+    )
+    private static boolean bringBackItemShadowing_1_18Enabled = true;
 
-    @Rule(desc = "Reintroduces Block Entity Swap")
-    private static boolean bringBackBlockEntitySwap = true;
+    @Rule(
+            key = "bringBackCurseBookOverstacking",
+            desc = "Reintroduces curse book overstacking",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.RISKY
+            }
+    )
+    private static boolean bringBackCurseBookOverstackingEnabled = false;
 
-    @Rule(desc = "Keeps blocks with swapped Block Entities")
-    private static boolean keepBlocksWithSwappedBlockEntities = true;
+    @Rule(
+            key = "bringBackOverstackedItemMovement_1_20",
+            desc = "Reintroduces overstacked item movement from 1.20",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.RISKY
+            }
+    )
+    private static boolean bringBackOverstackedItemMovement_1_20Enabled = false;
 
-    @Rule(desc = "Reintroduces item shadowing from 1.17")
-    private static boolean bringBackItemShadowing_1_17 = true;
+    @Rule(
+            key = "bringBackChunkSaveState_1_14",
+            desc = "Reintroduces chunk save state behavior from 1.14",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.EXPERIMENTAL
+            }
+    )
+    private static boolean bringBackChunkSaveState_1_14Enabled = false;
 
-    @Rule(desc = "Reintroduces item shadowing from 1.18")
-    private static boolean bringBackItemShadowing_1_18 = true;
+    @Rule(
+            key = "bringBackChunkSaveState_1_21",
+            desc = "Reintroduces chunk save state behavior from 1.21",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.EXPERIMENTAL
+            }
+    )
+    private static boolean bringBackChunkSaveState_1_21Enabled = false;
 
-    @Rule(desc = "Reintroduces curse book overstacking")
-    private static boolean bringBackCurseBookOverstacking = false;
+    @Rule(
+            key = "bringBackOldDragonFreezing",
+            desc = "Reintroduces old Ender Dragon freezing behavior",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.EXPERIMENTAL
+            }
+    )
+    private static boolean bringBackOldDragonFreezingEnabled = true;
 
-    @Rule(desc = "Reintroduces overstacked item movement from 1.20")
-    private static boolean bringBackOverstackedItemMovement_1_20 = false;
+    @Rule(
+            key = "bringBackArmorStandInvulnerableToWitherDamage",
+            desc = "Reintroduces armor stand immunity to wither damage",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.SURVIVAL
+            }
+    )
+    private static boolean bringBackArmorStandInvulnerableToWitherDamageEnabled = true;
 
-    @Rule(desc = "Reintroduces chunk save state from 1.14")
-    private static boolean bringBackChunkSaveState_1_14 = false;
+    @Rule(
+            key = "bringBackShadowItemsInMobInventory",
+            desc = "Reintroduces shadow items in mob inventories",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.RISKY
+            }
+    )
+    private static boolean bringBackShadowItemsInMobInventoryEnabled = true;
 
-    @Rule(desc = "Reintroduces chunk save state from 1.21")
-    private static boolean bringBackChunkSaveState_1_21 = false;
+    @Rule(
+            key = "bringBackVoidlessVoidTrading",
+            desc = "Reintroduces voidless void trading",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.EXPERIMENTAL
+            }
+    )
+    private static boolean bringBackVoidlessVoidTradingEnabled = true;
 
-    @Rule(desc = "Reintroduces old dragon freezing")
-    private static boolean bringBackOldDragonFreezing = true;
+    @Rule(
+            key = "bringBackGracefulSOHandling",
+            desc = "Reintroduces graceful StackOverflow handling",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.EXPERIMENTAL
+            }
+    )
+    private static boolean bringBackGracefulSOHandlingEnabled = true;
 
-    @Rule(desc = "Reintroduces armor stand immunity to wither damage")
-    private static boolean bringBackArmorStandInvulnerableToWitherDamage = true;
+    @Rule(
+            key = "bringBackGracefulOOMHandling",
+            desc = "Reintroduces graceful Out Of Memory handling",
+            tags = {
+                    RuleTags.REINTRODUCE,
+                    RuleTags.NOT_VANILLA,
+                    RuleTags.RISKY
+            }
+    )
+    private static boolean bringBackGracefulOOMHandlingEnabled = true;
 
-    @Rule(desc = "Reintroduces shadow items in mob inventories")
-    private static boolean bringBackShadowItemsInMobInventory = true;
-
-    @Rule(desc = "Reintroduces voidless void trading")
-    private static boolean bringBackVoidlessVoidTrading = true;
-
-    @Rule(desc = "Reintroduces graceful StackOverflow handling")
-    private static boolean bringBackGracefulSOHandling = true;
-
-    @Rule(desc = "Reintroduces graceful Out Of Memory handling")
-    private static boolean bringBackGracefulOOMHandling = true;
-
-    @Rule(desc = "Blocked message")
+    @Rule(
+            key = "cceSuppressorChatMessageEnabled",
+            desc = "Displays a chat message when CCE suppression is triggered",
+            tags = {
+                    RuleTags.QOL,
+                    RuleTags.NOT_VANILLA
+            }
+    )
     private static boolean cceSuppressorChatMessageEnabled = true;
-
-    static {
-        loadConfig();
-    }
 
     public static void loadConfig() {
         try {
+            if (CONFIG_FILE == null) {
+                throw new IllegalStateException("ConfigHandler was called before world load");
+            }
+
             if (!Files.exists(CONFIG_FILE.getParent())) {
                 Files.createDirectories(CONFIG_FILE.getParent());
             }
@@ -191,272 +382,200 @@ public class ConfigHandler {
             }
 
             Properties properties = new Properties();
+
             try (Reader reader = Files.newBufferedReader(CONFIG_FILE)) {
                 properties.load(reader);
             }
 
-            sneakingItemsEnabled = Boolean.parseBoolean(properties.getProperty("sneakingItems", "false"));
-            reIntroduceOldRaidsEnabled = Boolean.parseBoolean(properties.getProperty("reIntroduceOldRaids", "false"));
-            returnVoidTradeEnabled = Boolean.parseBoolean(properties.getProperty("returnVoidTradeEnabled", "false"));
-            returnExpFromPigmansEnabled = Boolean.parseBoolean(properties.getProperty("returnExpFromPigmansEnabled", "false"));
-            AIDisableShovelEnabled = Boolean.parseBoolean(properties.getProperty("AIDisableShovel", "false"));
-            reIntroduceInstantBlockUpdatesEnabled = Boolean.parseBoolean(properties.getProperty("reIntroduceInstantBlockUpdates", "false"));
-            cceSuppressorChatMessageEnabled = Boolean.parseBoolean(properties.getProperty("cceSuppressorChatMessageEnabled", "false"));
-            disableDeleteLightDataFixerEnabled = Boolean.parseBoolean(properties.getProperty("disableDeleteLightDataFixer", "false"));
-            reIntroduceLightSuppressionEnabled = Boolean.parseBoolean(properties.getProperty("reIntroduceLightSuppression", "false"));
-            shulkerRefillEnabled = Boolean.parseBoolean(properties.getProperty("shulkerRefill", "false"));
+            for (Field field : ConfigHandler.class.getDeclaredFields()) {
 
-            // AntiShadowPatch options
-            bringBackSOSuppression = Boolean.parseBoolean(properties.getProperty("bringBackSOSuppression", "true"));
-            bringBackCCESuppression = Boolean.parseBoolean(properties.getProperty("bringBackCCESuppression", "true"));
-            bringBackTrapdoorUpdateSkipping = Boolean.parseBoolean(properties.getProperty("bringBackTrapdoorUpdateSkipping", "true"));
-            bringBackFloatingRedstoneComponentsOnTopOfTrapdoor = Boolean.parseBoolean(properties.getProperty("bringBackFloatingRedstoneComponentsOnTopOfTrapdoor", "true"));
-            bringBackFurnaceXPDupe = Boolean.parseBoolean(properties.getProperty("bringBackFurnaceXPDupe", "true"));
-            bringBackFullBlockInnerCollisions = Boolean.parseBoolean(properties.getProperty("bringBackFullBlockInnerCollisions", "false"));
-            bringBackBlockEntitySwap = Boolean.parseBoolean(properties.getProperty("bringBackBlockEntitySwap", "true"));
-            keepBlocksWithSwappedBlockEntities = Boolean.parseBoolean(properties.getProperty("keepBlocksWithSwappedBlockEntities", "true"));
-            bringBackItemShadowing_1_17 = Boolean.parseBoolean(properties.getProperty("bringBackItemShadowing_1_17", "true"));
-            bringBackItemShadowing_1_18 = Boolean.parseBoolean(properties.getProperty("bringBackItemShadowing_1_18", "true"));
-            bringBackCurseBookOverstacking = Boolean.parseBoolean(properties.getProperty("bringBackCurseBookOverstacking", "false"));
-            bringBackOverstackedItemMovement_1_20 = Boolean.parseBoolean(properties.getProperty("bringBackOverstackedItemMovement_1_20", "false"));
-            bringBackChunkSaveState_1_14 = Boolean.parseBoolean(properties.getProperty("bringBackChunkSaveState_1_14", "false"));
-            bringBackChunkSaveState_1_21 = Boolean.parseBoolean(properties.getProperty("bringBackChunkSaveState_1_21", "false"));
-            bringBackOldDragonFreezing = Boolean.parseBoolean(properties.getProperty("bringBackOldDragonFreezing", "true"));
-            bringBackArmorStandInvulnerableToWitherDamage = Boolean.parseBoolean(properties.getProperty("bringBackArmorStandInvulnerableToWitherDamage", "true"));
-            bringBackShadowItemsInMobInventory = Boolean.parseBoolean(properties.getProperty("bringBackShadowItemsInMobInventory", "true"));
-            bringBackVoidlessVoidTrading = Boolean.parseBoolean(properties.getProperty("bringBackVoidlessVoidTrading", "true"));
-            bringBackGracefulSOHandling = Boolean.parseBoolean(properties.getProperty("bringBackGracefulSOHandling", "true"));
-            bringBackGracefulOOMHandling = Boolean.parseBoolean(properties.getProperty("bringBackGracefulOOMHandling", "true"));
+                Rule rule = field.getAnnotation(Rule.class);
+
+                if (rule == null)
+                    continue;
+
+                if (field.getType() != boolean.class)
+                    continue;
+
+                field.setAccessible(true);
+
+                boolean defaultValue = field.getBoolean(null);
+
+                boolean value = Boolean.parseBoolean(
+                        properties.getProperty(
+                                rule.key(),
+                                Boolean.toString(defaultValue)
+                        )
+                );
+
+                field.setBoolean(null, value);
+            }
 
         } catch (Exception e) {
-            System.err.println("[DSQExtension] Failed to load config file!");
-            e.printStackTrace();
+            throw new IllegalStateException("[DSQExtension] Failed to load config file!\n".concat(e.getMessage()));
         }
     }
 
     public static void saveConfig() {
         try {
+            if (CONFIG_FILE == null) {
+                throw new IllegalStateException("ConfigHandler was called before world load");
+            }
+
             if (!Files.exists(CONFIG_FILE.getParent())) {
                 Files.createDirectories(CONFIG_FILE.getParent());
             }
 
             Properties properties = new Properties();
-            properties.setProperty("sneakingItems", Boolean.toString(sneakingItemsEnabled));
-            properties.setProperty("reIntroduceOldRaids", Boolean.toString(reIntroduceOldRaidsEnabled));
-            properties.setProperty("returnVoidTradeEnabled", Boolean.toString(returnVoidTradeEnabled));
-            properties.setProperty("returnExpFromPigmansEnabled", Boolean.toString(returnExpFromPigmansEnabled));
-            properties.setProperty("AIDisableShovel", Boolean.toString(AIDisableShovelEnabled));
-            properties.setProperty("reIntroduceInstantBlockUpdates", Boolean.toString(reIntroduceInstantBlockUpdatesEnabled));
-            properties.setProperty("cceSuppressorChatMessageEnabled", Boolean.toString(cceSuppressorChatMessageEnabled));
-            properties.setProperty("disableDeleteLightDataFixer", Boolean.toString(disableDeleteLightDataFixerEnabled));
-            properties.setProperty("shulkerRefill", Boolean.toString(shulkerRefillEnabled));
 
-            // AntiShadowPatch options
-            properties.setProperty("bringBackSOSuppression", Boolean.toString(bringBackSOSuppression));
-            properties.setProperty("bringBackCCESuppression", Boolean.toString(bringBackCCESuppression));
-            properties.setProperty("bringBackTrapdoorUpdateSkipping", Boolean.toString(bringBackTrapdoorUpdateSkipping));
-            properties.setProperty("bringBackFloatingRedstoneComponentsOnTopOfTrapdoor", Boolean.toString(bringBackFloatingRedstoneComponentsOnTopOfTrapdoor));
-            properties.setProperty("bringBackFurnaceXPDupe", Boolean.toString(bringBackFurnaceXPDupe));
-            properties.setProperty("bringBackFullBlockInnerCollisions", Boolean.toString(bringBackFullBlockInnerCollisions));
-            properties.setProperty("bringBackBlockEntitySwap", Boolean.toString(bringBackBlockEntitySwap));
-            properties.setProperty("keepBlocksWithSwappedBlockEntities", Boolean.toString(keepBlocksWithSwappedBlockEntities));
-            properties.setProperty("bringBackItemShadowing_1_17", Boolean.toString(bringBackItemShadowing_1_17));
-            properties.setProperty("bringBackItemShadowing_1_18", Boolean.toString(bringBackItemShadowing_1_18));
-            properties.setProperty("bringBackCurseBookOverstacking", Boolean.toString(bringBackCurseBookOverstacking));
-            properties.setProperty("bringBackOverstackedItemMovement_1_20", Boolean.toString(bringBackOverstackedItemMovement_1_20));
-            properties.setProperty("bringBackChunkSaveState_1_14", Boolean.toString(bringBackChunkSaveState_1_14));
-            properties.setProperty("bringBackChunkSaveState_1_21", Boolean.toString(bringBackChunkSaveState_1_21));
-            properties.setProperty("bringBackOldDragonFreezing", Boolean.toString(bringBackOldDragonFreezing));
-            properties.setProperty("bringBackArmorStandInvulnerableToWitherDamage", Boolean.toString(bringBackArmorStandInvulnerableToWitherDamage));
-            properties.setProperty("bringBackShadowItemsInMobInventory", Boolean.toString(bringBackShadowItemsInMobInventory));
-            properties.setProperty("bringBackVoidlessVoidTrading", Boolean.toString(bringBackVoidlessVoidTrading));
-            properties.setProperty("bringBackGracefulSOHandling", Boolean.toString(bringBackGracefulSOHandling));
-            properties.setProperty("bringBackGracefulOOMHandling", Boolean.toString(bringBackGracefulOOMHandling));
-            properties.setProperty("reIntroduceLightSuppression", Boolean.toString(reIntroduceLightSuppressionEnabled));
+            for (Field field : ConfigHandler.class.getDeclaredFields()) {
+
+                Rule rule = field.getAnnotation(Rule.class);
+
+                if (rule == null)
+                    continue;
+
+                if (field.getType() != boolean.class)
+                    continue;
+
+                field.setAccessible(true);
+
+                properties.setProperty(
+                        rule.key(),
+                        Boolean.toString(field.getBoolean(null))
+                );
+            }
 
             try (Writer writer = Files.newBufferedWriter(CONFIG_FILE)) {
                 properties.store(writer, "DSQ Extension Config");
             }
+
         } catch (Exception e) {
-            System.err.println("[DSQExtension] Failed to save config file!");
-            e.printStackTrace();
+            throw new IllegalStateException("[DSQExtension] Failed to save config file!\n".concat(e.getMessage()));
         }
+    }
+
+    public static boolean removeRaidOmenFromAdvancementsEnabled() {
+        return removeRaidOmenFromAdvancementsEnabled;
     }
 
     public static boolean isSneakingItemsEnabled() {
         return sneakingItemsEnabled;
     }
 
-    public static void setSneakingItemsEnabled(boolean enabled) {
-        sneakingItemsEnabled = enabled;
-        saveConfig();
-    }
-
     public static boolean isReIntroduceOldRaidsEnabled() {
         return reIntroduceOldRaidsEnabled;
-    }
-
-    public static void setReIntroduceOldRaidsEnabled(boolean enabled) {
-        reIntroduceOldRaidsEnabled = enabled;
-        saveConfig();
     }
 
     public static boolean isReturnVoidTradeEnabled() {
         return returnVoidTradeEnabled;
     }
 
-    public static void setReturnVoidTradeEnabled(boolean enabled) {
-        returnVoidTradeEnabled = enabled;
-        saveConfig();
-    }
-
     public static boolean isReturnExpFromPigmansEnabled() {
         return returnExpFromPigmansEnabled;
     }
 
-    public static void setReturnExpFromPigmansEnabled(boolean enabled) {
-        returnExpFromPigmansEnabled = enabled;
-        saveConfig();
-    }
-
     public static boolean isAIDisableShovel() {
-        return AIDisableShovelEnabled;
-    }
-
-    public static void setAIDisableShovel(boolean enabled) {
-        AIDisableShovelEnabled = enabled;
-        saveConfig();
+        return aiDisableShovelEnabled;
     }
 
     public static boolean isReIntroduceInstantBlockUpdatesEnabled() {
         return reIntroduceInstantBlockUpdatesEnabled;
     }
 
-    public static void setReIntroduceInstantBlockUpdatesEnabled(boolean enabled) {
-        reIntroduceInstantBlockUpdatesEnabled = enabled;
-        saveConfig();
-    }
-
-    public static boolean isCceSuppressorChatMessageEnabled() {
-        return cceSuppressorChatMessageEnabled;
-    }
-
-    public static void setCceSuppressorChatMessageEnabled(boolean enabled) {
-        cceSuppressorChatMessageEnabled = enabled;
-        saveConfig();
-    }
-
     public static boolean isDisableDeleteLightDataFixerEnabled() {
         return disableDeleteLightDataFixerEnabled;
-    }
-
-    public static void setDisableDeleteLightDataFixerEnabled(boolean enabled) {
-        disableDeleteLightDataFixerEnabled = enabled;
-        saveConfig();
     }
 
     public static boolean isReIntroduceLightSuppressionEnabled() {
         return reIntroduceLightSuppressionEnabled;
     }
 
-    public static void setReIntroduceLightSuppressionEnabled(boolean enabled) {
-        reIntroduceLightSuppressionEnabled = enabled;
-        saveConfig();
-    }
-
     public static boolean isShulkerRefillEnabled() {
         return shulkerRefillEnabled;
     }
 
-    public static void setShulkerRefillEnabled(boolean enabled) {
-        shulkerRefillEnabled = enabled;
-        saveConfig();
-    }
-
-    // AntiShadowPatch Getters
-
     public static boolean isBringBackSOSuppressionEnabled() {
-        return bringBackSOSuppression;
-    }
-
-    public static void setBringBackSOSuppressionEnabled(boolean enabled) {
-        bringBackSOSuppression = enabled;
-        saveConfig();
+        return bringBackSOSuppressionEnabled;
     }
 
     public static boolean isBringBackCCESuppressionEnabled() {
-        return bringBackCCESuppression;
+        return bringBackCCESuppressionEnabled;
     }
 
     public static boolean isBringBackTrapdoorUpdateSkippingEnabled() {
-        return bringBackTrapdoorUpdateSkipping;
+        return bringBackTrapdoorUpdateSkippingEnabled;
     }
 
     public static boolean isBringBackFloatingRedstoneComponentsOnTopOfTrapdoorEnabled() {
-        return bringBackFloatingRedstoneComponentsOnTopOfTrapdoor;
+        return bringBackFloatingRedstoneComponentsOnTopOfTrapdoorEnabled;
     }
 
     public static boolean isBringBackFurnaceXPDupeEnabled() {
-        return bringBackFurnaceXPDupe;
+        return bringBackFurnaceXPDupeEnabled;
     }
 
     public static boolean isBringBackFullBlockInnerCollisionsEnabled() {
-        return bringBackFullBlockInnerCollisions;
+        return bringBackFullBlockInnerCollisionsEnabled;
     }
 
     public static boolean isBringBackBlockEntitySwapEnabled() {
-        return bringBackBlockEntitySwap;
+        return bringBackBlockEntitySwapEnabled;
     }
 
     public static boolean isKeepBlocksWithSwappedBlockEntitiesEnabled() {
-        return keepBlocksWithSwappedBlockEntities;
+        return keepBlocksWithSwappedBlockEntitiesEnabled;
     }
 
     public static boolean isBringBackItemShadowing_1_17Enabled() {
-        return bringBackItemShadowing_1_17;
+        return bringBackItemShadowing_1_17Enabled;
     }
 
     public static boolean isBringBackItemShadowing_1_18Enabled() {
-        return bringBackItemShadowing_1_18;
+        return bringBackItemShadowing_1_18Enabled;
     }
 
     public static boolean isBringBackCurseBookOverstackingEnabled() {
-        return bringBackCurseBookOverstacking;
+        return bringBackCurseBookOverstackingEnabled;
     }
 
     public static boolean isBringBackOverstackedItemMovement_1_20Enabled() {
-        return bringBackOverstackedItemMovement_1_20;
+        return bringBackOverstackedItemMovement_1_20Enabled;
     }
 
     public static boolean isBringBackChunkSaveState_1_14Enabled() {
-        return bringBackChunkSaveState_1_14;
+        return bringBackChunkSaveState_1_14Enabled;
     }
 
     public static boolean isBringBackChunkSaveState_1_21Enabled() {
-        return bringBackChunkSaveState_1_21;
+        return bringBackChunkSaveState_1_21Enabled;
     }
 
     public static boolean isBringBackOldDragonFreezingEnabled() {
-        return bringBackOldDragonFreezing;
+        return bringBackOldDragonFreezingEnabled;
     }
 
     public static boolean isBringBackArmorStandInvulnerableToWitherDamageEnabled() {
-        return bringBackArmorStandInvulnerableToWitherDamage;
+        return bringBackArmorStandInvulnerableToWitherDamageEnabled;
     }
 
     public static boolean isBringBackShadowItemsInMobInventoryEnabled() {
-        return bringBackShadowItemsInMobInventory;
+        return bringBackShadowItemsInMobInventoryEnabled;
     }
 
     public static boolean isBringBackVoidlessVoidTradingEnabled() {
-        return bringBackVoidlessVoidTrading;
+        return bringBackVoidlessVoidTradingEnabled;
     }
 
     public static boolean isBringBackGracefulSOHandlingEnabled() {
-        return bringBackGracefulSOHandling;
+        return bringBackGracefulSOHandlingEnabled;
     }
 
     public static boolean isBringBackGracefulOOMHandlingEnabled() {
-        return bringBackGracefulOOMHandling;
+        return bringBackGracefulOOMHandlingEnabled;
+    }
+
+    public static boolean isCceSuppressorChatMessageEnabled() {
+        return cceSuppressorChatMessageEnabled;
     }
 }

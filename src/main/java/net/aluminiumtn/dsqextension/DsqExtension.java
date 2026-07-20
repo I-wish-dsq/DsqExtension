@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.aluminiumtn.dsqextension.config.ConfigCommand;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.CommandSourceStack;
@@ -30,8 +31,6 @@ public class DsqExtension implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ConfigHandler.loadConfig();
-
         AutoCollectHandler.register();
         TradeUnlocker.register();
 
@@ -47,6 +46,8 @@ public class DsqExtension implements ModInitializer {
         }
 
         registerCommands();
+
+        ServerLifecycleEvents.SERVER_STARTED.register(ConfigHandler::init);
     }
 
     private void registerCommands() {
@@ -58,6 +59,7 @@ public class DsqExtension implements ModInitializer {
 
     private void registerCustomCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal(MOD_ID)
+
                 .then(Commands.literal("getLightEngineQueue")
                         .executes(context -> {
                             int queue = getLightEngineQueue();
@@ -72,13 +74,6 @@ public class DsqExtension implements ModInitializer {
                 .then(Commands.literal("getEntityID")
                         .executes(context -> {
                             context.getSource().sendSystemMessage(Component.literal("Current entity id: " + getEntityCounter()));
-                            return 1;
-                        })
-                )
-
-                .then(Commands.literal("getConfigPath")
-                        .executes(context -> {
-                            context.getSource().sendSystemMessage(Component.literal("Current config file path is: " + ConfigHandler.CONFIG_FILE));
                             return 1;
                         })
                 )

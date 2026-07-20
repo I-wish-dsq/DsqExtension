@@ -24,7 +24,13 @@
 		"blocks.FullBlockCollisionsMixin$EndPortalBlockMixin",
 		"LevelLightEngineMixin",
 		"BlockItemMixin",
-		"accessors.EnityAccessor"
+		"accessors.EnityAccessor",
+		"BadOmenStatusEffectMixin",
+		"MobEffectsPredicateMixin",
+		"RaiderEntityMixin",
+		"RaidManagerMixin",
+		"RaidStartMixin",
+		"RaidTickMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

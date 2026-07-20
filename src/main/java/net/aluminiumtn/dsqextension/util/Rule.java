@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Rule {
+    String key() default  "Ti_ebanata_kysok";
     String desc() default "Описание отсутствует";
     boolean defaultValue() default false;
     RuleTags[] tags() default {};

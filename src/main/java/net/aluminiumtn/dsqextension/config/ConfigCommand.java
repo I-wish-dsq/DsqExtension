@@ -28,7 +28,11 @@ public class ConfigCommand {
                 });
 
         for (Field field : getRuleFields()) {
-            cmd.then(Commands.literal(field.getName())
+            Rule rule = field.getAnnotation(Rule.class);
+
+            if (rule == null) continue;
+
+            cmd.then(Commands.literal(rule.key())
                     .executes(context -> displayRuleInfo(context.getSource(), field))
 
                     .then(Commands.argument("value", BoolArgumentType.bool())
@@ -42,8 +46,8 @@ public class ConfigCommand {
 
     private static int displayRuleInfo(CommandSourceStack source, Field field) {
         Rule rule = field.getAnnotation(Rule.class);
-        String desc = rule != null ? rule.desc() : "Описание отсутствует";
-        String tags = rule != null ? Arrays.stream(rule.tags()).map(Enum::name).collect(Collectors.joining(", ")) : "none";
+        String desc = rule.desc();
+        String tags = rule.tags() != null ? Arrays.stream(rule.tags()).map(Enum::name).collect(Collectors.joining(", ")) : "none";
         boolean defaultValue = rule != null && rule.defaultValue();
 
         boolean currentValue = false;
@@ -56,7 +60,7 @@ public class ConfigCommand {
 
         source.sendSystemMessage(Component.literal("=======================================").withStyle(ChatFormatting.WHITE));
 
-        source.sendSystemMessage(Component.literal(field.getName()).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
+        source.sendSystemMessage(Component.literal(rule.key()).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
 
         source.sendSystemMessage(Component.literal(desc).withStyle(ChatFormatting.WHITE));
 
@@ -71,11 +75,11 @@ public class ConfigCommand {
 
         MutableComponent optionsText = Component.literal("Suggested options: ").withStyle(ChatFormatting.GRAY);
 
-        optionsText.append(createToggleButton("[false]", currentValue ? ChatFormatting.DARK_GRAY : ChatFormatting.RED, !currentValue, "/dsqextension " + field.getName() + " false", "Изменить на false"));
+        optionsText.append(createToggleButton("[false]", currentValue ? ChatFormatting.DARK_GRAY : ChatFormatting.RED, !currentValue, "/dsqextension " + rule.key() + " false", "Изменить на false"));
 
         optionsText.append(Component.literal(" "));
 
-        optionsText.append(createToggleButton("[true]", currentValue ? ChatFormatting.GREEN : ChatFormatting.DARK_GRAY, currentValue, "/dsqextension " + field.getName() + " true", "Изменить на true"));
+        optionsText.append(createToggleButton("[true]", currentValue ? ChatFormatting.GREEN : ChatFormatting.DARK_GRAY, currentValue, "/dsqextension " + rule.key() + " true", "Изменить на true"));
 
 
         source.sendSystemMessage(optionsText);
@@ -85,17 +89,18 @@ public class ConfigCommand {
     }
 
     private static int setRule(CommandContext<CommandSourceStack> context, Field field) {
+        String key = field.getAnnotation(Rule.class).key();
         boolean newValue = BoolArgumentType.getBool(context, "value");
         ChatFormatting color = (newValue) ? ChatFormatting.GREEN : ChatFormatting.RED;
         try {
             field.setBoolean(null, newValue);
 
-            net.aluminiumtn.dsqextension.DsqExtension.onRuleChanged(field.getName(), newValue);
+            net.aluminiumtn.dsqextension.DsqExtension.onRuleChanged(key, newValue);
             ConfigHandler.saveConfig();
 
             context.getSource().sendSystemMessage(
                     Component.literal("Правило ")
-                            .append(Component.literal(field.getName()).withStyle(ChatFormatting.WHITE))
+                            .append(Component.literal(key).withStyle(ChatFormatting.WHITE))
                             .append(" установлено на ")
                             .append(Component.literal(String.valueOf(newValue)).withStyle(color, ChatFormatting.BOLD))
             );
